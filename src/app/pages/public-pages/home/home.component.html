@@ -1,0 +1,668 @@
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h1 class="display-4 fw-bold mb-3">Find Your Dream Job</h1>
+        <p class="lead mb-4">Discover thousands of job opportunities with all the information you need. Your future starts here.</p>
+        
+        <!-- Search Bar -->
+        <div class="search-box p-4 rounded bg-white shadow-lg">
+          <form [formGroup]="searchForm" (ngSubmit)="searchJobs()">
+            <div class="row g-3">
+              <div class="col-md-5">
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-0">
+                    <i class="bi bi-search text-primary"></i>
+                  </span>
+                  <input type="text" 
+                         class="form-control border-0" 
+                         formControlName="keyword"
+                         placeholder="Job title, keywords, or company">
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="input-group">
+                  <span class="input-group-text bg-transparent border-0">
+                    <i class="bi bi-geo-alt text-primary"></i>
+                  </span>
+                  <input type="text" 
+                         class="form-control border-0" 
+                         formControlName="location"
+                         placeholder="City, state, or remote">
+                </div>
+              </div>
+              <div class="col-md-3">
+                <button type="submit" 
+                        class="btn btn-primary w-100"
+                        [disabled]="loading">
+                  <i class="bi bi-search me-2"></i>
+                  {{ loading ? 'Searching...' : 'Search Jobs' }}
+                </button>
+              </div>
+            </div>
+          </form>
+          
+          <!-- Popular Searches -->
+          <div class="mt-4">
+            <span class="text-muted small me-3">Popular Searches:</span>
+            <a [routerLink]="['/jobs']" [queryParams]="{ keyword: 'Software Engineer' }" 
+               class="badge bg-light text-dark me-2 mb-2">Software Engineer</a>
+            <a [routerLink]="['/jobs']" [queryParams]="{ jobType: 'REMOTE' }" 
+               class="badge bg-light text-dark me-2 mb-2">Remote</a>
+            <a [routerLink]="['/jobs']" [queryParams]="{ keyword: 'Marketing' }" 
+               class="badge bg-light text-dark me-2 mb-2">Marketing</a>
+            <a [routerLink]="['/jobs']" [queryParams]="{ keyword: 'Design' }" 
+               class="badge bg-light text-dark me-2 mb-2">Design</a>
+            <a [routerLink]="['/jobs']" [queryParams]="{ keyword: 'Finance' }" 
+               class="badge bg-light text-dark me-2 mb-2">Finance</a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 text-center">
+        <img src="assets/images/hero-job-search.png" alt="Job Search" class="img-fluid">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🆕 Quick Access Links (NEW SECTION) -->
+<section class="py-3 bg-light quick-links">
+  <div class="container">
+    <div class="row">
+      <div class="col-12">
+        <div class="text-center">
+          <div class="d-flex flex-wrap justify-content-center gap-4">
+            <a [routerLink]="['/about']" class="text-decoration-none ">
+              <i class="bi bi-info-circle me-2"></i>About Us
+            </a>
+            <a [routerLink]="['/contact']" class="text-decoration-none ">
+              <i class="bi bi-envelope me-2"></i>Contact
+            </a>
+            <a [routerLink]="['/help']" class="text-decoration-none ">
+              <i class="bi bi-question-circle me-2"></i>Help Center
+            </a>
+            <a [routerLink]="['/employers']" class="text-decoration-none ">
+              <i class="bi bi-briefcase me-2"></i>For Employers
+            </a>
+            <a [routerLink]="['/privacy']" class="text-decoration-none ">
+              <i class="bi bi-shield me-2"></i>Privacy Policy
+            </a>
+            <a [routerLink]="['/terms']" class="text-decoration-none ">
+              <i class="bi bi-file-text me-2"></i>Terms of Service
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Quick Links Section -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row mb-4">
+      <div class="col-12">
+        <h2 class="text-center mb-3">Quick Job Search</h2>
+        <p class="text-center text-muted mb-0">Find jobs by category with real-time count updates</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4 col-lg-3 col-sm-6" *ngFor="let link of quickLinks">
+        <a [routerLink]="['/jobs']" [queryParams]="{ keyword: link.label }" 
+           class="card quick-link-card border-0 shadow-sm h-100 text-decoration-none">
+          <div class="card-body text-center p-4">
+            <div class="quick-link-icon rounded-circle mb-3 mx-auto" [ngClass]="link.color">
+              <i [class]="link.icon + ' text-white'"></i>
+            </div>
+            <h5 class="card-title mb-2">{{link.label}}</h5>
+            <div class="h3 fw-bold text-primary mb-0">{{link.count.toLocaleString()}}</div>
+            <small class="text-muted">Available Jobs</small>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5 bg-gradient-primary text-white">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4 col-lg-2 col-sm-6" *ngFor="let stat of stats">
+        <div class="text-center">
+          <i [class]="stat.icon + ' display-4 mb-3'"></i>
+          <div class="display-5 fw-bold mb-2">{{stat.value}}</div>
+          <div class="h6 mb-0">{{stat.label}}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section (UPDATED - Added Help Card) -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="mb-3">Why Choose Our Platform?</h2>
+        <p class="text-muted">We provide the best tools for both job seekers and employers</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-3 col-sm-6" *ngFor="let feature of features">
+        <div class="card border-0 text-center h-100 feature-card">
+          <div class="card-body p-4">
+            <div class="feature-icon rounded-circle mb-3 mx-auto">
+              <i [class]="feature.icon + ' text-primary display-4'"></i>
+            </div>
+            <h5 class="card-title mb-3">{{feature.title}}</h5>
+            <p class="card-text text-muted">{{feature.description}}</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- 🆕 Help/Support Card (NEW CARD) -->
+      <div class="col-md-3 col-sm-6">
+        <div class="card border-0 text-center h-100 feature-card">
+          <div class="card-body p-4">
+            <div class="feature-icon rounded-circle mb-3 mx-auto bg-info bg-opacity-10">
+              <i class="bi bi-headset text-info display-4"></i>
+            </div>
+            <h5 class="card-title mb-3">24/7 Support</h5>
+            <p class="card-text text-muted mb-3">Need help? Our support team is always available</p>
+            <a [routerLink]="['/contact']" class="btn btn-outline-info btn-sm mt-2">
+              Contact Support
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Categories -->
+<section id="categories" class="py-5 bg-white">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8 mx-auto text-center">
+        <h2 class="mb-3">Discover Jobs Across Popular Categories</h2>
+        <p class="text-muted">Browse thousands of jobs in various industries and specialties</p>
+      </div>
+    </div>
+    
+    <!-- Loading state -->
+    <div *ngIf="categories.length === 0" class="text-center">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading categories...</span>
+      </div>
+      <p class="mt-2 text-muted">Loading categories...</p>
+    </div>
+    
+    <!-- Categories grid -->
+    <div class="row g-3" *ngIf="categories.length > 0">
+      <div class="col-md-6 col-lg-4" *ngFor="let category of categories">
+        <a [routerLink]="['/jobs']" [queryParams]="{ category: category.id, categoryName: category.name }" 
+           class="category-card card border-0 shadow-sm h-100 text-decoration-none hover-lift">
+          <div class="card-body p-3 d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+              <div>
+                <h6 class="mb-1 text-dark">{{category.name}}</h6>
+                <small class="text-muted">{{category.jobCount}} {{category.jobCount === 1 ? 'job' : 'jobs'}} available</small>
+              </div>
+            </div>
+            <span class="badge bg-primary rounded-pill">{{category.jobCount}}</span>
+          </div>
+        </a>
+      </div>
+    </div>
+    
+    <!-- View More Button -->
+    <div class="text-center mt-5" *ngIf="categories.length > 0">
+      <a [routerLink]="['/categories']" class="btn btn-outline-primary">
+        <i class="bi bi-grid-3x3-gap me-2"></i>View All Categories
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- Hot Jobs -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8">
+        <h2 class="mb-3">🔥 Hot Jobs</h2>
+        <p class="text-muted mb-0">Urgent hiring positions with competitive packages</p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a [routerLink]="['/jobs']" class="btn btn-outline-primary">
+          View All Jobs <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let job of hotJobs">
+        <div class="card job-card border-0 shadow-sm h-100 hover-shadow">
+          <div class="card-body">
+            <!-- Hot Badge -->
+            <div class="position-absolute top-0 end-0 m-3">
+              <span class="badge bg-danger">
+                <i class="bi bi-fire me-1"></i>Hot
+              </span>
+            </div>
+            
+            <!-- Company Logo -->
+            <div class="d-flex align-items-center mb-3">
+              <div class="company-logo me-3">
+                <img [src]="job.company.logoUrl || 'assets/images/default-company.png'" 
+                     [alt]="job.company.name" 
+                     class="rounded" 
+                     style="width: 50px; height: 50px; object-fit: contain;">
+              </div>
+              <div>
+                <h5 class="card-title mb-1">
+                  <a [routerLink]="['/jobs', job.id]" class="text-decoration-none text-dark">
+                    {{job.title}}
+                  </a>
+                </h5>
+                <p class="card-text text-muted small mb-0">
+                  {{job.company.name}}
+                </p>
+              </div>
+            </div>
+            
+            <!-- Job Details -->
+            <div class="mb-3">
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                <span class="badge bg-light text-dark">
+                  <i class="bi" [ngClass]="getJobTypeIcon(job.jobType) + ' me-1'"></i>
+                  {{job.jobType.replace('_', ' ') || 'Full Time'}}
+                </span>
+                <span class="badge" [ngClass]="getExperienceBadgeClass(job.experienceLevel)">
+                  {{job.experienceLevel || 'Mid Level'}}
+                </span>
+                <span class="badge bg-light text-dark">
+                  <i class="bi bi-geo-alt me-1"></i>{{job.location || 'Remote'}}
+                </span>
+              </div>
+              
+              <div class="mb-3">
+                <div class="text-primary fw-bold">
+                  ${{job.minSalary?.toLocaleString() || 'Negotiable'}}
+                  <span *ngIf="job.maxSalary"> - ${{job.maxSalary.toLocaleString()}}</span>
+                </div>
+                <small class="text-muted">per {{job.salaryType.toLowerCase() || 'month'}}</small>
+              </div>
+              
+              <p class="card-text text-muted small mb-3">
+                {{(job.description || '').slice(0, 120)}}...
+              </p>
+            </div>
+            
+            <!-- Skills -->
+            <div class="mb-4">
+              <div class="d-flex flex-wrap gap-1">
+                <span class="badge bg-light text-dark small" *ngFor="let skill of (job.skills || []).slice(0, 3)">
+                  {{skill}}
+                </span>
+                <span *ngIf="(job.skills.length || 0) > 3" class="badge bg-light text-dark small">
+                  +{{(job.skills.length || 0) - 3}}
+                </span>
+              </div>
+            </div>
+            
+            <!-- Footer -->
+            <div class="d-flex justify-content-between align-items-center">
+              <small class="text-muted">
+                <i class="bi bi-clock me-1"></i>{{getDaysAgo(job.postedAt)}}
+              </small>
+              <a [routerLink]="['/jobs', job.id]" class="btn btn-sm btn-primary">
+                Apply Now
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Job Types -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="mb-3">Find Jobs by Type</h2>
+        <p class="text-muted">Choose from various job types that suit your lifestyle</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-2 col-sm-4 col-6" *ngFor="let jobType of jobTypes">
+        <div class="card border-0 text-center h-100 job-type-card">
+          <div class="card-body p-4">
+            <div class="job-type-icon rounded-circle mb-3 mx-auto">
+              <i [class]="jobType.icon + ' text-primary h2'"></i>
+            </div>
+            <h5 class="card-title mb-2">{{jobType.label}}</h5>
+            <div class="h4 fw-bold text-primary">{{jobType.count.toLocaleString()}}</div>
+            <small class="text-muted">Jobs Available</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Popular Locations -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8">
+        <h2 class="mb-3">📍 Popular Locations</h2>
+        <p class="text-muted">Find jobs in your preferred city or region</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-4" *ngFor="let location of popularLocations">
+        <div class="card location-card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <i [class]="location.icon + ' h4 text-primary mb-0'"></i>
+              </div>
+              <span class="badge bg-primary rounded-pill">{{location.jobs}} jobs</span>
+            </div>
+            
+            <h5 class="card-title mb-1">{{location.city}}</h5>
+            <p class="card-text text-muted mb-4">{{location.country}}</p>
+            
+            <a [routerLink]="['/jobs']" [queryParams]="{ location: location.city }" 
+               class="btn btn-outline-primary w-100">
+              Browse Jobs <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 🆕 Employer Resources Section (NEW SECTION) -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="mb-3">👔 For Employers & Businesses</h2>
+        <p class="text-muted">Powerful tools to find and hire the best talent</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4 text-center">
+            <div class="mb-3">
+              <i class="bi bi-briefcase display-4 text-primary"></i>
+            </div>
+            <h4 class="card-title mb-3">Post Jobs Free</h4>
+            <p class="card-text text-muted mb-4">
+              Reach thousands of qualified candidates with our free job posting service
+            </p>
+            <a [routerLink]="['/employer/post-job']" class="btn btn-primary">
+              Post a Job
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4 text-center">
+            <div class="mb-3">
+              <i class="bi bi-people display-4 text-success"></i>
+            </div>
+            <h4 class="card-title mb-3">Talent Search</h4>
+            <p class="card-text text-muted mb-4">
+              Access our database of pre-screened candidates with advanced filtering
+            </p>
+            <a [routerLink]="['/employer/search']" class="btn btn-success">
+              Find Candidates
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body p-4 text-center">
+            <div class="mb-3">
+              <i class="bi bi-headset display-4 text-info"></i>
+            </div>
+            <h4 class="card-title mb-3">Employer Support</h4>
+            <p class="card-text text-muted mb-4">
+              Dedicated account manager and 24/7 support for your hiring needs
+            </p>
+            <a [routerLink]="['/contact']" [queryParams]="{ type: 'employer' }" class="btn btn-info">
+              Contact Sales
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Companies -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8">
+        <h2 class="mb-3">⭐ Featured Companies</h2>
+        <p class="text-muted mb-0">Top companies actively hiring on our platform</p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a [routerLink]="['/companies']" class="btn btn-outline-primary">
+          View All Companies <i class="bi bi-arrow-right ms-2"></i>
+        </a>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-3 col-sm-6" *ngFor="let company of featuredCompanies">
+        <div class="card company-card border-0 shadow-sm h-100 text-center">
+          <div class="card-body p-4">
+            <!-- Company Logo -->
+            <div class="company-logo-container mb-3">
+              <img [src]="company.logoUrl || 'assets/images/default-company.png'" 
+                   [alt]="company.name" 
+                   class="img-fluid"
+                   style="max-height: 60px; max-width: 120px;">
+            </div>
+            
+            <h5 class="card-title mb-2">{{company.name}}</h5>
+            <p class="card-text text-muted small mb-3">{{company.industry || 'Various Industry'}}</p>
+            
+            <!-- Rating -->
+            <div class="mb-3">
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-fill text-warning"></i>
+              <i class="bi bi-star-half text-warning"></i>
+              <span class="ms-2 small">4.5</span>
+            </div>
+            
+            <a [routerLink]="['/companies', company.id]" class="btn btn-sm btn-outline-primary">
+              View Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h2 class="mb-3">💬 Success Stories</h2>
+        <p class="text-muted">Hear from people who found their dream jobs through us</p>
+      </div>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-4" *ngFor="let testimonial of testimonials">
+        <div class="card testimonial-card border-0 shadow-sm h-100">
+          <div class="card-body p-4">
+            <!-- Quote Icon -->
+            <div class="text-end mb-3">
+              <i class="bi bi-quote display-4 text-primary opacity-25"></i>
+            </div>
+            
+            <!-- Testimonial Text -->
+            <p class="card-text text-muted mb-4">"{{testimonial.quote}}"</p>
+            
+            <!-- Rating -->
+            <div class="mb-3">
+              <i *ngFor="let star of [1,2,3,4,5]" 
+                 class="bi bi-star-fill text-warning"></i>
+            </div>
+            
+            <!-- Author -->
+            <div class="d-flex align-items-center">
+              <div class="testimonial-avatar me-3">
+                <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center"
+                     style="width: 50px; height: 50px;">
+                  <span class="text-white fw-bold">{{testimonial.name.charAt(0)}}</span>
+                </div>
+              </div>
+              <div>
+                <h6 class="mb-1">{{testimonial.name}}</h6>
+                <p class="text-muted small mb-0">{{testimonial.role}}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Call to Action (UPDATED with More Links) -->
+<section class="py-5 bg-gradient-primary text-white">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h2 class="display-5 fw-bold mb-3">Ready to advance your career?</h2>
+        <p class="lead mb-4">Join thousands of professionals who found their dream jobs through our platform.</p>
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <button class="btn btn-light btn-lg" (click)="navigateToRegister()">
+            <i class="bi bi-person-plus me-2"></i>Create Free Account
+          </button>
+          <button class="btn btn-outline-light btn-lg" (click)="navigateToRegister()">
+            <i class="bi bi-briefcase me-2"></i>Post a Job
+          </button>
+        </div>
+        
+        <!-- 🆕 Additional Links in CTA -->
+        <div class="mt-4">
+          <p class="mb-2 text-white-75">Need more information?</p>
+          <div class="d-flex flex-wrap gap-3">
+            <a [routerLink]="['/about']" class="text-white text-decoration-none">
+              <i class="bi bi-info-circle me-1"></i>About Us
+            </a>
+            <a [routerLink]="['/contact']" class="text-white text-decoration-none">
+              <i class="bi bi-envelope me-1"></i>Contact Us
+            </a>
+            <a [routerLink]="['/help']" class="text-white text-decoration-none">
+              <i class="bi bi-question-circle me-1"></i>Help Center
+            </a>
+            <a [routerLink]="['/faq']" class="text-white text-decoration-none">
+              <i class="bi bi-chat-left-text me-1"></i>FAQ
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-4 text-center">
+        <img src="assets/images/career-growth.svg" alt="Career Growth" class="img-fluid mt-4 mt-lg-0">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Latest Jobs (Quick View) -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <div class="row mb-5">
+      <div class="col-lg-8">
+        <h2 class="mb-3">🆕 Latest Jobs</h2>
+        <p class="text-muted">Recently posted job opportunities</p>
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-12">
+        <div class="table-responsive">
+          <table class="table table-hover bg-white shadow-sm">
+            <thead class="bg-light">
+              <tr>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Type</th>
+                <th>Salary</th>
+                <th>Posted</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let job of latestJobs">
+                <td>
+                  <a [routerLink]="['/jobs', job.id]" class="text-decoration-none">
+                    {{job.title}}
+                  </a>
+                </td>
+                <td>{{job.company.name || 'Various Companies'}}</td>
+                <td>{{job.location || 'Remote'}}</td>
+                <td>
+                  <span class="badge bg-light text-dark">
+                    {{job.jobType.replace('_', ' ') || 'Full Time'}}
+                  </span>
+                </td>
+                <td>
+                  <span class="fw-bold">
+                    ${{job.minSalary?.toLocaleString() || 'Negotiable'}}
+                  </span>
+                </td>
+                <td>
+                  <small class="text-muted">{{getDaysAgo(job.postedAt)}}</small>
+                </td>
+                <td>
+                  <a [routerLink]="['/jobs', job.id]" class="btn btn-sm btn-primary">
+                    Apply
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <div class="text-center mt-4">
+      <a [routerLink]="['/jobs']" class="btn btn-primary btn-lg">
+        <i class="bi bi-search me-2"></i>Browse All Jobs
+      </a>
+    </div>
+  </div>
+</section>
+<app-footer></app-footer>

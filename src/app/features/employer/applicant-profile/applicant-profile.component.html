@@ -1,0 +1,220 @@
+<div class="container py-4" *ngIf="!isLoading; else loadingTpl">
+
+  <!-- HEADER -->
+  <div class="card shadow-sm border-0 mb-4">
+    <div class="card-body d-flex align-items-center gap-4">
+
+      <img
+        [src]="user?.profilePictureUrl || 'assets/avatar.png'"
+        class="rounded-circle border"
+        style="width:120px;height:120px;object-fit:cover;"
+        alt="Profile Picture"
+      />
+
+      <div class="flex-grow-1">
+        <h3 class="fw-bold mb-1">
+          {{ user?.fullName || 'Unnamed User' }}
+        </h3>
+
+        <p class="mb-1 text-muted">
+          <i class="bi bi-envelope me-1"></i> {{ user?.email }}
+        </p>
+
+        <p class="mb-1 text-muted" *ngIf="user?.phone">
+          <i class="bi bi-telephone me-1"></i> {{ user.phone }}
+        </p>
+
+        <p class="mt-2 fw-semibold" *ngIf="profile?.headline">
+          {{ profile?.headline}}
+        </p>
+      </div>
+      
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="card shadow-sm border-0 mb-4" *ngIf="profile?.summary">
+    <div class="card-header bg-white border-0">
+      <h5 class="mb-0">
+        <i class="bi bi-card-text me-2 text-primary"></i>
+        About
+      </h5>
+    </div>
+    <div class="card-body">
+      <p class="mb-0">{{ profile?.summary }}</p>
+    </div>
+  </div>
+
+  <div class="row g-4">
+
+    <!-- LEFT -->
+    <div class="col-lg-8">
+
+      <!-- EXPERIENCE -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-0">
+          <h5 class="mb-0">
+            <i class="bi bi-briefcase me-2 text-primary"></i>
+            Experience
+          </h5>
+        </div>
+
+        <div class="card-body">
+          <div *ngIf="profile?.experience?.length; else noExp">
+            <div *ngFor="let exp of profile!.experience" class="mb-4">
+              <h6 class="fw-bold mb-1">{{ exp.jobTitle }}</h6>
+              <div class="text-muted">
+                {{ exp.companyName }}
+              </div>
+
+              <small class="text-muted">
+                {{ exp.startDate }} –
+                {{ exp.endDate ? (exp.endDate) : 'Present' }}
+              </small>
+
+              <p class="mt-2 mb-0">{{ exp.responsibilities }}</p>
+            </div>
+          </div>
+
+          <ng-template #noExp>
+            <p class="text-muted mb-0">No experience added yet.</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- EDUCATION -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-0">
+          <h5 class="mb-0">
+            <i class="bi bi-mortarboard me-2 text-primary"></i>
+            Education
+          </h5>
+        </div>
+
+        <div class="card-body">
+          <div *ngIf="profile?.education?.length; else noEdu">
+            <div *ngFor="let edu of profile!.education" class="mb-3">
+              <h6 class="fw-bold mb-1">{{ edu.degree }}</h6>
+              <div class="text-muted">{{ edu.institution }}</div>
+              <small class="text-muted">
+                {{ edu.startDate  }} -
+                {{ edu.endDate }}
+              </small>
+            </div>
+          </div>
+
+          <ng-template #noEdu>
+            <p class="text-muted mb-0">No education added.</p>
+          </ng-template>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col-lg-4">
+
+      <!-- SKILLS -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-0">
+          <h5 class="mb-0">
+            <i class="bi bi-tools me-2 text-primary"></i>
+            Skills
+          </h5>
+        </div>
+
+        <div class="card-body">
+          <div class="d-flex flex-wrap gap-2">
+            <span *ngFor="let skill of profile?.skills"
+                  class="badge bg-secondary px-3 py-2">
+              {{ skill }}
+            </span>
+
+            <p *ngIf="!profile?.skills?.length" class="text-muted">
+              No skills added
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- JOB PREFERENCES -->
+      <div class="card shadow-sm border-0 mb-4">
+        <div class="card-header bg-white border-0">
+          <h5 class="mb-0">
+            <i class="bi bi-briefcase-fill me-2 text-primary"></i>
+            Job Preferences
+          </h5>
+        </div>
+
+        <div class="card-body">
+          <div class="mb-2">
+            <strong>Job Types:</strong>
+            <div class="mt-2 d-flex flex-wrap gap-2">
+              <span *ngFor="let jt of profile?.preferredJobTypes"
+                    class="badge bg-info text-dark">
+                {{ getJobTypeLabel(jt) }}
+              </span>
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <strong>Preferred Locations:</strong>
+            <div class="mt-2 d-flex flex-wrap gap-2">
+              <span *ngFor="let loc of profile?.preferredLocations"
+                    class="badge bg-secondary">
+                {{ loc }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- RESUMES -->
+      <div class="card shadow-sm border-0">
+        <div class="card-header bg-white border-0">
+          <h5 class="mb-0">
+            <i class="bi bi-file-earmark-text me-2 text-danger"></i>
+            Resumes
+          </h5>
+        </div>
+
+        <div class="card-body">
+          <div *ngFor="let resume of profile?.resumes" class="border rounded p-2 mb-2">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <strong>{{ resume.title }}</strong>
+                <div class="small text-muted">
+                  {{ resume.uploadedAt }}
+                </div>
+                <span *ngIf="resume.primaryResume" class="badge bg-success mt-1">
+                  Primary
+                </span>
+              </div>
+
+              <button
+  class="btn btn-outline-primary btn-sm"
+  (click)="downloadResume(resume)"
+>
+  <i class="bi bi-download"></i>
+</button>
+
+            </div>
+          </div>
+
+          <p *ngIf="!profile?.resumes?.length" class="text-muted mb-0">
+            No resumes uploaded.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<ng-template #loadingTpl>
+  <div class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3 text-muted">Loading profile...</p>
+  </div>
+</ng-template>
+

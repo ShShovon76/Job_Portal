@@ -1,0 +1,356 @@
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Find Your Dream Job</h1>
+                <p class="lead mb-4">Discover thousands of job opportunities with all the information you need. Its your
+                    future, come find it.</p>
+                <div class="search-box p-4 rounded bg-white shadow">
+                    <form [formGroup]="searchForm">
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-0">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-0" formControlName="keyword"
+                                        placeholder="Job title, keywords, or company">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-0">
+                                        <i class="bi bi-geo-alt"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-0" formControlName="location"
+                                        placeholder="City, state, or remote">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="button" class="btn btn-primary w-100" (click)="loadJobs()">
+                                    <i class="bi bi-search me-2"></i>Search Jobs
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="mt-4">
+                    <span class="me-3">Popular Searches:</span>
+                    <a href="#" class="badge bg-light text-dark me-2 mb-2">Software Engineer</a>
+                    <a href="#" class="badge bg-light text-dark me-2 mb-2">Remote</a>
+                    <a href="#" class="badge bg-light text-dark me-2 mb-2">Marketing</a>
+                    <a href="#" class="badge bg-light text-dark me-2 mb-2">Design</a>
+                    <a href="#" class="badge bg-light text-dark me-2 mb-2">Finance</a>
+                </div>
+            </div>
+            <div class="col-lg-4 text-center">
+                <img src="assets/images/job-search.png" alt="Job Search" class="img-fluid" style="max-height: 300px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="container my-5">
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <div class="col-lg-3 mb-4">
+            <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
+                <div class="card-header bg-white border-0 py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-funnel me-2"></i>Filters
+                        <button class="btn btn-sm btn-outline-secondary float-end" (click)="clearFilters()">
+                            Clear All
+                        </button>
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <!-- Job Type Filter -->
+                    <div class="mb-4">
+                        <h6 class="mb-3"><i class="bi bi-briefcase me-2"></i>Job Type</h6>
+                        <div class="list-group list-group-flush">
+                            <button type="button"
+                                class="list-group-item list-group-item-action border-0 py-2 d-flex justify-content-between align-items-center"
+                                [class.active]="selectedJobType === 'ALL'"
+                                (click)="selectedJobType = 'ALL'; loadJobs()">
+                                All Types
+                                <span class="badge bg-primary rounded-pill">{{jobs.length}}</span>
+                            </button>
+                            <button *ngFor="let type of jobTypes"
+                                class="list-group-item list-group-item-action border-0 py-2"
+                                [class.active]="selectedJobType === type" (click)="selectedJobType = type; loadJobs()">
+                                <i class="bi {{ getJobTypeIcon(type) }} me-2"></i>
+                                {{ type.replace('_', ' ') }}
+                            </button>
+
+                        </div>
+                    </div>
+
+                    <!-- Experience Level -->
+                    <div class="mb-4">
+                        <h6 class="mb-3"><i class="bi bi-graph-up me-2"></i>Experience Level</h6>
+                        <select class="form-select" [(ngModel)]="selectedExperience" (change)="loadJobs()">
+                            <option value="ALL">All Levels</option>
+                            <option *ngFor="let level of ['ENTRY', 'MID', 'SENIOR', 'DIRECTOR', 'EXECUTIVE']"
+                                [value]="level">
+                                {{level.charAt(0) + level.slice(1).toLowerCase()}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Category Filter -->
+                    <div class="mb-4">
+                        <h6 class="mb-3"><i class="bi bi-tags me-2"></i>Category</h6>
+                        <select class="form-select" [(ngModel)]="selectedCategoryId" (change)="loadJobs()">
+
+                            <option value="">All Categories</option>
+                            <option *ngFor="let category of categories" [value]="category.id">
+                                {{category.name}}
+                            </option>
+                        </select>
+                    </div>
+
+                    <!-- Remote Filter -->
+                    <div class="mb-4">
+                        <h6 class="mb-3"><i class="bi bi-laptop me-2"></i>Remote Work</h6>
+                        <div class="btn-group w-100" role="group">
+                            <button type="button" class="btn btn-outline-primary"
+                                [class.active]="selectedRemote === null" (click)="selectedRemote = null; loadJobs()">
+                                All
+                            </button>
+                            <button type="button" class="btn btn-outline-primary"
+                                [class.active]="selectedRemote === true" (click)="selectedRemote = true; loadJobs()">
+                                Remote Only
+                            </button>
+                            <button type="button" class="btn btn-outline-primary"
+                                [class.active]="selectedRemote === false" (click)="selectedRemote = false; loadJobs()">
+                                On-site Only
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Salary Range -->
+                    <div class="mb-4">
+                        <h6 class="mb-3"><i class="bi bi-cash-coin me-2"></i>Salary Range</h6>
+                        <div [formGroup]="searchForm">
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <input type="number" class="form-control" formControlName="minSalary"
+                                        placeholder="Min">
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" class="form-control" formControlName="maxSalary"
+                                        placeholder="Max">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Apply Filters Button -->
+                    <button class="btn btn-primary w-100" (click)="loadJobs()">
+                        <i class="bi bi-check-circle me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Jobs List -->
+        <div class="col-lg-9">
+            <!-- Results Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="mb-0">Job Opportunities</h4>
+                    <p class="text-muted mb-0">{{totalJobs}} jobs found</p>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                        <i class="bi bi-sort-down me-2"></i>Sort By
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Newest First</a></li>
+                        <li><a class="dropdown-item" href="#">Salary: High to Low</a></li>
+                        <li><a class="dropdown-item" href="#">Salary: Low to High</a></li>
+                        <li><a class="dropdown-item" href="#">Relevance</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div *ngIf="loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">Loading job opportunities...</p>
+            </div>
+
+            <!-- No Results -->
+            <div *ngIf="!loading && jobs.length === 0" class="text-center py-5">
+                <img src="assets/images/no-results.svg" alt="No results" class="img-fluid mb-4"
+                    style="max-height: 200px;">
+                <h4 class="mb-3">No jobs found</h4>
+                <p class="text-muted mb-4">Try adjusting your search filters to find more opportunities.</p>
+                <button class="btn btn-primary" (click)="clearFilters()">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Clear All Filters
+                </button>
+            </div>
+
+            <!-- Jobs List -->
+            <div *ngIf="!loading && jobs.length > 0">
+                <div class="row row-cols-1 g-4">
+                    <div class="col" *ngFor="let job of jobs">
+                        <div class="card job-card shadow-sm border-0 h-100 hover-shadow">
+                            <div class="card-body">
+                                <div class="row align-items-center">
+                                    <div class="col-md-2 text-center mb-3 mb-md-0">
+                                        <div class="company-logo-container bg-light rounded-circle p-3 mx-auto"
+                                            style="width: 80px; height: 80px;">
+                                            <img [src]="job.company.logoUrl || 'assets/images/default-company.png'"
+                                                [alt]="job.company.name" class="img-fluid" style="max-height: 40px;">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h5 class="card-title mb-1">
+                                            <a [routerLink]="['/jobs', job.id]" class="text-decoration-none text-dark">
+                                                {{job.title}}
+                                            </a>
+                                        </h5>
+                                        <p class="card-text text-muted mb-2">
+                                            <i class="bi bi-building me-1"></i>{{job.company.name}}
+                                            <span class="mx-2">•</span>
+                                            <i class="bi bi-geo-alt me-1"></i>{{job.location}}
+                                            <span *ngIf="job.remoteAllowed" class="badge bg-success ms-2">Remote</span>
+                                        </p>
+                                        <div class="d-flex flex-wrap gap-2 mb-2">
+                                            <span class="badge bg-light text-dark">
+                                                <i class="bi {{getJobTypeIcon(job.jobType)}} me-1"></i>
+                                                {{job.jobType.replace('_', ' ')}}
+                                            </span>
+                                            <span class="badge"
+                                                [ngClass]="getExperienceBadgeClass(job.experienceLevel)">
+                                                {{job.experienceLevel.charAt(0) +
+                                                job.experienceLevel.slice(1).toLowerCase()}}
+                                            </span>
+                                            <span class="badge bg-light text-dark"
+                                                *ngFor="let skill of job.skills.slice(0, 3)">
+                                                {{skill}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 text-md-end">
+                                        <div class="mb-3">
+                                            <h5 class="text-primary mb-1">
+                                                ${{job.minSalary?.toLocaleString() || 'Negotiable'}}
+                                                <span *ngIf="job.maxSalary"> -
+                                                    ${{job.maxSalary.toLocaleString()}}</span>
+                                            </h5>
+                                            <small class="text-muted">per {{job.salaryType.toLowerCase()}}</small>
+                                        </div>
+                                        <div class="d-flex gap-2 justify-content-md-end">
+                                            <button class="btn btn-outline-primary btn-sm">
+                                                <i class="bi bi-bookmark"></i>
+                                            </button>
+                                            <a [routerLink]="['/jobs', job.id]" class="btn btn-primary btn-sm">
+                                                Apply Now
+                                            </a>
+                                        </div>
+                                        <small class="text-muted mt-2 d-block">
+                                            <i class="bi bi-clock me-1"></i>{{getDaysAgo(job.postedAt)}}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                class="card-footer bg-transparent border-top d-flex justify-content-between align-items-center">
+                                <div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-eye me-1"></i>{{job.viewsCount || 0}} views
+                                        <span class="mx-2">•</span>
+                                        <i class="bi bi-people me-1"></i>{{job.applicantsCount || 0}} applicants
+                                    </small>
+                                </div>
+                                <div>
+                                    <small class="text-muted">Closes {{getDaysAgo(job.deadline)}}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav *ngIf="totalPages > 1" class="mt-5">
+                    <ul class="pagination justify-content-center">
+
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <button class="page-link" (click)="changePage(currentPage - 1)">
+                                Previous
+                            </button>
+                        </li>
+
+                        <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index"
+                            [class.active]="currentPage === i + 1">
+                            <button class="page-link" (click)="changePage(i + 1)">
+                                {{ i + 1 }}
+                            </button>
+                        </li>
+
+                        <li class="page-item" [class.disabled]="currentPage === totalPages">
+                            <button class="page-link" (click)="changePage(currentPage + 1)">
+                                Next
+                            </button>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div>
+
+            <!-- Featured Companies -->
+            <div class="mt-5">
+                <h4 class="mb-4">Featured Companies</h4>
+                <div class="row g-4">
+                    <div class="col-md-4" *ngFor="let i of [1,2,3]">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body text-center">
+                                <div class="mb-3">
+                                    <img src="assets/images/company-{{i}}.jpg" alt="Company" class="img-fluid"
+                                        style="max-height: 60px;">
+                                </div>
+                                <h5 class="card-title">TechCorp {{i}}</h5>
+                                <p class="card-text text-muted">Software & Technology</p>
+                                <div class="mb-3">
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                    <i class="bi bi-star-half text-warning"></i>
+                                    <span class="ms-2">4.5</span>
+                                </div>
+                                <a [routerLink]=""  class="btn btn-outline-primary btn-sm">View Jobs</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="mb-3">Looking for talent?</h3>
+                <p class="text-muted mb-4">Post your job and reach thousands of qualified candidates.</p>
+                <button class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle me-2"></i>Post a Job
+                </button>
+            </div>
+            <div class="col-lg-4 text-center">
+                <img src="assets/images/recruiter.svg" alt="Recruiter" class="img-fluid" style="max-height: 200px;">
+            </div>
+        </div>
+    </div>
+</section>
+<app-footer></app-footer>

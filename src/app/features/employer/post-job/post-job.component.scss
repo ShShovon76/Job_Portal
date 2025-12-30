@@ -1,0 +1,257 @@
+:host {
+  display: block;
+}
+
+/* Custom Card Styling */
+.card {
+  border-radius: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .card-header {
+    border-radius: 12px 12px 0 0 !important;
+  }
+}
+
+/* Form Control Styling */
+.form-control, .form-select {
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  padding: 0.75rem 1rem;
+  transition: all 0.2s ease;
+  
+  &:focus {
+    border-color: #4dabf7;
+    box-shadow: 0 0 0 0.25rem rgba(77, 171, 247, 0.15);
+  }
+  
+  &.is-invalid {
+    border-color: #fa5252;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23fa5252'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23fa5252' stroke='none'/%3e%3c/svg%3e");
+    background-position: right calc(0.375em + 0.1875rem) center;
+    background-repeat: no-repeat;
+    background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+  }
+}
+
+/* Input Group Styling */
+.input-group-text {
+  border-radius: 8px 0 0 8px;
+  background-color: #f8f9fa;
+  border-color: #dee2e6;
+  color: #6c757d;
+}
+
+/* Skills Badge Styling */
+.badge {
+  &.bg-primary {
+    background: linear-gradient(135deg, #4dabf7, #339af0) !important;
+    border: none;
+    
+    &:hover {
+      transform: scale(1.05);
+      transition: transform 0.2s ease;
+    }
+  }
+}
+
+/* Button Styling */
+.btn {
+  border-radius: 8px;
+  padding: 0.625rem 1.5rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  
+  &-primary {
+    background: linear-gradient(135deg, #339af0, #228be6);
+    border: none;
+    
+    &:hover {
+      background: linear-gradient(135deg, #228be6, #1c7ed6);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(51, 154, 240, 0.3);
+    }
+    
+    &:disabled {
+      background: linear-gradient(135deg, #a5d8ff, #74c0fc);
+      cursor: not-allowed;
+    }
+  }
+  
+  &-outline-primary {
+    border: 2px solid #339af0;
+    color: #339af0;
+    
+    &:hover {
+      background-color: #339af0;
+      color: white;
+    }
+  }
+}
+
+/* Alert Styling */
+.alert {
+  border-radius: 10px;
+  border: none;
+  
+  &-success {
+    background: linear-gradient(135deg, #40c057, #2f9e44);
+    color: white;
+    
+    .btn-close {
+      filter: brightness(0) invert(1);
+    }
+  }
+  
+  &-warning {
+    background: linear-gradient(135deg, #ffd43b, #fab005);
+    color: #212529;
+  }
+}
+
+/* Progress Bar */
+.progress {
+  border-radius: 10px;
+  background-color: #e9ecef;
+  
+  .progress-bar {
+    border-radius: 10px;
+    background: linear-gradient(90deg, #40c057, #51cf66);
+  }
+}
+
+/* Skill Suggestions Button */
+.btn-outline-secondary {
+  border-radius: 20px;
+  padding: 0.375rem 1rem;
+  
+  &:hover {
+    background-color: #6c757d;
+    color: white;
+    transform: translateY(-1px);
+  }
+}
+
+/* Form Switch */
+.form-switch {
+  .form-check-input {
+    width: 3em;
+    height: 1.5em;
+    
+    &:checked {
+      background-color: #40c057;
+      border-color: #40c057;
+    }
+    
+    &:focus {
+      box-shadow: 0 0 0 0.25rem rgba(64, 192, 87, 0.25);
+    }
+  }
+}
+
+/* Textarea Styling */
+textarea.form-control {
+  resize: vertical;
+  min-height: 150px;
+  
+  &::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+    line-height: 1.6;
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .card-body {
+    padding: 1.5rem !important;
+  }
+  
+  .btn {
+    padding: 0.5rem 1rem;
+  }
+}
+
+/* Animation for Success */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.alert-success {
+  animation: fadeInUp 0.5s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+  
+  &:hover {
+    background: #a8a8a8;
+  }
+}
+
+/* Form Validation Icons */
+.invalid-feedback {
+  font-size: 0.875rem;
+  padding-left: 1.75rem;
+  
+  i {
+    width: 1.25rem;
+    text-align: center;
+  }
+}
+
+/* Gradient Background for Tips */
+.border-info {
+  border-left-color: #17a2b8 !important;
+}
+
+.border-success {
+  border-left-color: #28a745 !important;
+}
+
+.border-primary {
+  border-left-color: #007bff !important;
+}
+
+.border-warning {
+  border-left-color: #ffc107 !important;
+}
+
+/* Preview Card Enhancements */
+.text-purple {
+  color: #6f42c1;
+}
+
+/* Completion Status */
+.display-6 {
+  font-size: 2.5rem;
+  font-weight: 700;
+}

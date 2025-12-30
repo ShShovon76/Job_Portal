@@ -1,0 +1,529 @@
+<!-- Loading State -->
+<div *ngIf="loading" class="loading-container">
+  <div class="spinner-border text-primary" role="status">
+    <span class="visually-hidden">Loading...</span>
+  </div>
+  <p class="mt-3">Loading company details...</p>
+</div>
+
+<!-- Company Details -->
+<div *ngIf="!loading && company" class="company-details-page">
+  <!-- Hero Section -->
+  <section class="hero-section py-5">
+    <div class="container">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a [routerLink]="['/companies']">Companies</a></li>
+          <li class="breadcrumb-item active" aria-current="page">{{company.name}}</li>
+        </ol>
+      </nav>
+
+      <div class="company-header">
+        <div class="row align-items-center">
+          <!-- Company Logo & Basic Info -->
+          <div class="col-md-8">
+            <div class="d-flex align-items-start">
+              <div class="company-logo-container me-4">
+                <img [src]="company.logoUrl || 'assets/images/default-company.png'" 
+                     [alt]="company.name" 
+                     class="company-logo">
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex align-items-center mb-2">
+                  <h1 class="company-name mb-0">{{company.name}}</h1>
+                  <span *ngIf="company.verified" class="verified-badge ms-3">
+                    <i class="bi bi-check-circle-fill me-1"></i>Verified
+                  </span>
+                </div>
+                
+                <div class="company-meta mb-3">
+                  <span class="company-industry me-3">
+                    <i [class]="getIndustryIcon(company.industry)"></i>
+                    {{company.industry || 'Not specified'}}
+                  </span>
+                  <span class="company-size me-3">
+                    <i class="bi bi-people"></i>
+                    {{company.companySize || 'Size not specified'}}
+                  </span>
+                  <span class="company-founded" *ngIf="company.foundedYear">
+                    <i class="bi bi-calendar"></i>
+                    Founded {{company.foundedYear}}
+                  </span>
+                </div>
+
+                <!-- Rating -->
+                <div class="company-rating d-flex align-items-center mb-3">
+                  <div class="star-rating me-2">
+                    <i *ngFor="let star of getRatingStars(averageRating)" 
+                       [class]="star"></i>
+                  </div>
+                  <span class="rating-value fw-bold me-2">{{averageRating.toFixed(1)}}</span>
+                  <span class="review-count text-muted">
+                    ({{totalReviews}} reviews)
+                  </span>
+                </div>
+
+                <!-- Location -->
+                <div class="company-location">
+                  <i class="bi bi-geo-alt"></i>
+                  <span>{{company.address || 'Location not specified'}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="col-md-4 mt-4 mt-md-0">
+            <div class="company-actions">
+              <div class="d-flex flex-wrap gap-2">
+                <button class="btn btn-primary" (click)="followCompany()">
+                  <i class="bi bi-plus-circle me-2"></i>Follow
+                </button>
+                <button class="btn btn-outline-primary">
+                  <i class="bi bi-briefcase me-2"></i>View Jobs
+                </button>
+                <button class="btn btn-outline-secondary">
+                  <i class="bi bi-share me-2"></i>Share
+                </button>
+              </div>
+              
+              <!-- Website -->
+              <div *ngIf="company.website" class="mt-3">
+                <a [href]="company.website" target="_blank" class="btn btn-outline-dark btn-sm w-100">
+                  <i class="bi bi-globe me-2"></i>Visit Website
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navigation Tabs -->
+  <div class="navigation-tabs">
+    <div class="container">
+      <ul class="nav nav-tabs border-0">
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'overview'" 
+             (click)="setActiveTab('overview')">
+            <i class="bi bi-info-circle me-2"></i>Overview
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'jobs'" 
+             (click)="setActiveTab('jobs')">
+            <i class="bi bi-briefcase me-2"></i>Jobs
+            <span class="badge bg-primary ms-2">{{jobs.length}}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'reviews'" 
+             (click)="setActiveTab('reviews'); loadCompanyReviews(company.id)">
+            <i class="bi bi-star me-2"></i>Reviews
+            <span class="badge bg-primary ms-2">{{totalReviews}}</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" [class.active]="activeTab === 'photos'" 
+             (click)="setActiveTab('photos')">
+            <i class="bi bi-images me-2"></i>Photos
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Tab Content -->
+  <div class="tab-content-section py-5">
+    <div class="container">
+      <!-- Overview Tab -->
+      <div *ngIf="activeTab === 'overview'" class="row">
+        <!-- Left Column -->
+        <div class="col-lg-8">
+          <!-- About Section -->
+          <div class="card company-info-card mb-4">
+            <div class="card-header">
+              <h5><i class="bi bi-info-circle me-2"></i>About {{company.name}}</h5>
+            </div>
+            <div class="card-body">
+              <p class="company-description">
+                {{company.about || 'No description available for this company.'}}
+              </p>
+              
+              <!-- Key Highlights -->
+              <div class="row mt-4">
+                <div class="col-md-6">
+                  <div class="info-item">
+                    <i class="bi bi-building"></i>
+                    <div>
+                      <div class="label">Company Type</div>
+                      <div class="value">{{company.companySize || 'Not specified'}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-item">
+                    <i class="bi bi-people"></i>
+                    <div>
+                      <div class="label">Employees</div>
+                      <div class="value">{{company.companySize || 'Not specified'}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-item">
+                    <i class="bi bi-geo-alt"></i>
+                    <div>
+                      <div class="label">Location</div>
+                      <div class="value">{{company.address || 'Not specified'}}</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="info-item">
+                    <i class="bi bi-calendar"></i>
+                    <div>
+                      <div class="label">Founded</div>
+                      <div class="value">{{company.foundedYear || 'Not specified'}}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rating Summary -->
+          <div class="card company-info-card mb-4">
+            <div class="card-header">
+              <h5><i class="bi bi-star me-2"></i>Company Rating</h5>
+            </div>
+            <div class="card-body">
+              <div class="rating-summary">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="average-rating text-center">
+                      <div class="rating-number">{{averageRating.toFixed(1)}}</div>
+                      <div class="star-rating mb-2">
+                        <i *ngFor="let star of getRatingStars(averageRating)" 
+                           [class]="star"></i>
+                      </div>
+                      <div class="review-count">{{totalReviews}} reviews</div>
+                    </div>
+                  </div>
+                  <div class="col-md-8">
+                    <div class="rating-bars">
+                      <div *ngFor="let dist of getRatingDistribution()" class="rating-bar-item">
+                        <div class="stars">
+                          <span *ngFor="let i of [1,2,3,4,5]" 
+                                [class.text-warning]="i <= dist.rating">
+                            ★
+                          </span>
+                        </div>
+                        <div class="bar">
+                          <div class="fill" [style.width.%]="dist.percentage"></div>
+                        </div>
+                        <div class="percentage">{{dist.count}}</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Jobs Preview -->
+          <div class="card company-info-card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+              <h5><i class="bi bi-briefcase me-2"></i>Recent Job Openings</h5>
+              <a [routerLink]="['/jobs']" [queryParams]="{ companyId: company.id }" class="btn btn-sm btn-outline-primary">
+                View All Jobs
+              </a>
+            </div>
+            <div class="card-body">
+              <div *ngIf="jobs.length === 0" class="text-center py-4">
+                <i class="bi bi-briefcase display-4 text-muted mb-3"></i>
+                <p class="text-muted">No current job openings</p>
+              </div>
+              
+              <div *ngIf="jobs.length > 0" class="jobs-list">
+                <div *ngFor="let job of jobs" class="job-card mb-3">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="job-title mb-1">
+                        <a [routerLink]="['/jobs', job.id]" class="text-decoration-none">
+                          {{job.title}}
+                        </a>
+                      </h6>
+                      <div class="job-meta">
+                        <span class="badge bg-light text-dark me-2">
+                          <i class="bi bi-geo-alt"></i> {{job.location}}
+                        </span>
+                        <span class="badge bg-light text-dark me-2">
+                          {{job.jobType}}
+                        </span>
+                        <span class="badge bg-light text-dark">
+                          {{job.experienceLevel}}
+                        </span>
+                      </div>
+                    </div>
+                    <div class="salary">
+                      ${{job.minSalary?.toLocaleString() || 'Negotiable'}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column (Sidebar) -->
+        <div class="col-lg-4">
+          <!-- Contact Info -->
+          <div class="card company-info-card mb-4">
+            <div class="card-header">
+              <h5><i class="bi bi-envelope me-2"></i>Contact Information</h5>
+            </div>
+            <div class="card-body">
+              <div class="contact-info">
+                <div *ngIf="company.website" class="contact-item mb-3">
+                  <i class="bi bi-globe"></i>
+                  <div>
+                    <div class="label">Website</div>
+                    <a [href]="company.website" target="_blank" class="value">
+                      {{company.website}}
+                    </a>
+                  </div>
+                </div>
+                <div *ngIf="company.email" class="contact-item mb-3">
+                  <i class="bi bi-envelope"></i>
+                  <div>
+                    <div class="label">Email</div>
+                    <a [href]="'mailto:' + company.email" class="value">
+                      {{company.email}}
+                    </a>
+                  </div>
+                </div>
+                <div *ngIf="company.phone" class="contact-item mb-3">
+                  <i class="bi bi-telephone"></i>
+                  <div>
+                    <div class="label">Phone</div>
+                    <a [href]="'tel:' + company.phone" class="value">
+                      {{company.phone}}
+                    </a>
+                  </div>
+                </div>
+                <div *ngIf="company.address" class="contact-item">
+                  <i class="bi bi-geo-alt"></i>
+                  <div>
+                    <div class="label">Address</div>
+                    <div class="value">{{company.address}}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Social Links -->
+          <div *ngIf="company.socialLinks && company.socialLinks.length > 0" 
+               class="card company-info-card mb-4">
+            <div class="card-header">
+              <h5><i class="bi bi-share me-2"></i>Follow Us</h5>
+            </div>
+            <div class="card-body">
+              <div class="social-links">
+                <a *ngFor="let link of company.socialLinks" 
+                   [href]="link.url" 
+                   target="_blank"
+                   class="social-link"
+                   [class.text-linkedin]="link.type === 'LINKEDIN'"
+                   [class.text-facebook]="link.type === 'FACEBOOK'"
+                   [class.text-twitter]="link.type === 'TWITTER'"
+                   [class.text-instagram]="link.type === 'INSTAGRAM'">
+                  <i [class]="getSocialLinkIcon(link.type)"></i>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Similar Companies -->
+          <div *ngIf="similarCompanies.length > 0" class="card company-info-card">
+            <div class="card-header">
+              <h5><i class="bi bi-building me-2"></i>Similar Companies</h5>
+            </div>
+            <div class="card-body">
+              <div class="similar-companies">
+                <div *ngFor="let similar of similarCompanies" class="similar-company-card mb-3">
+                  <div class="d-flex align-items-center">
+                    <div class="company-logo me-3">
+                      <img [src]="similar.logoUrl || 'assets/images/default-company.png'" 
+                           [alt]="similar.name">
+                    </div>
+                    <div class="flex-grow-1">
+                      <h6 class="company-name mb-1">
+                        <a [routerLink]="['/companies', similar.id]" class="text-decoration-none">
+                          {{similar.name}}
+                        </a>
+                      </h6>
+                      <p class="company-industry text-muted small mb-0">
+                        {{similar.industry}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs Tab -->
+      <div *ngIf="activeTab === 'jobs'" class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">All Jobs at {{company.name}}</h5>
+            </div>
+            <div class="card-body">
+              <div *ngIf="jobs.length === 0" class="text-center py-5">
+                <i class="bi bi-briefcase display-4 text-muted mb-3"></i>
+                <h4>No Current Openings</h4>
+                <p class="text-muted mb-4">This company doesn't have any active job postings at the moment.</p>
+                <button class="btn btn-primary" (click)="setActiveTab('overview')">
+                  Back to Overview
+                </button>
+              </div>
+              
+              <div *ngIf="jobs.length > 0" class="jobs-table">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Job Title</th>
+                        <th>Type</th>
+                        <th>Location</th>
+                        <th>Experience</th>
+                        <th>Salary</th>
+                        <th>Posted</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let job of jobs">
+                        <td>
+                          <a [routerLink]="['/jobs', job.id]" class="text-decoration-none fw-medium">
+                            {{job.title}}
+                          </a>
+                        </td>
+                        <td>
+                          <span class="badge bg-light text-dark">{{job.jobType}}</span>
+                        </td>
+                        <td>{{job.location}}</td>
+                        <td>{{job.experienceLevel}}</td>
+                        <td class="fw-medium text-success">
+                          ${{job.minSalary?.toLocaleString() || 'Negotiable'}}
+                        </td>
+                        <td>{{getDaysAgo(job.postedAt)}}</td>
+                        <td>
+                          <a [routerLink]="['/jobs', job.id]" class="btn btn-sm btn-primary">
+                            Apply
+                          </a>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reviews Tab -->
+     <!-- Reviews Tab - Fixed Version -->
+<div *ngIf="activeTab === 'reviews'" class="row">
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="mb-0">Reviews for {{company.name}}</h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="reviews.length === 0" class="text-center py-5">
+          <i class="bi bi-star display-4 text-muted mb-3"></i>
+          <h4>No Reviews Yet</h4>
+          <p class="text-muted mb-4">Be the first to review this company!</p>
+          <a [routerLink]="['/companies', company.id, 'reviews']" class="btn btn-primary">
+            Write a Review
+          </a>
+        </div>
+        
+        <div *ngIf="reviews.length > 0" class="reviews-list">
+          <div *ngFor="let review of reviews" class="review-card mb-4">
+            <div class="review-header d-flex justify-content-between align-items-start mb-3">
+              <div class="d-flex align-items-center">
+                <div class="reviewer-avatar me-3">
+                  {{getReviewerInitials(review.reviewerId)}}
+                </div>
+                <div>
+                  <h6 class="reviewer-name mb-1">{{getReviewerName(review.reviewerId)}}</h6>
+                  <small class="text-muted">{{getTimeAgo(review.createdAt)}}</small>
+                </div>
+              </div>
+              <div class="review-rating">
+                <div class="star-rating">
+                  <i *ngFor="let star of getRatingStars(review.rating)" 
+                     [class]="star"></i>
+                </div>
+              </div>
+            </div>
+            
+            <h6 class="review-title mb-2">{{review.title}}</h6>
+            <p class="review-content">{{review.comment}}</p>
+          </div>
+        </div>
+        
+        <!-- Load More Reviews -->
+        <div *ngIf="reviews.length > 0 && totalReviews > reviews.length" class="text-center mt-4">
+          <button class="btn btn-outline-primary" 
+                  (click)="loadCompanyReviews(company.id)">
+            Load More Reviews
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Photos Tab -->
+      <div *ngIf="activeTab === 'photos'" class="row">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header">
+              <h5 class="mb-0">Company Photos</h5>
+            </div>
+            <div class="card-body">
+              <div class="text-center py-5">
+                <i class="bi bi-images display-4 text-muted mb-3"></i>
+                <h4>No Photos Available</h4>
+                <p class="text-muted mb-4">This company hasn't uploaded any photos yet.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Company Not Found -->
+<div *ngIf="!loading && !company" class="container py-5">
+  <div class="text-center">
+    <i class="bi bi-building-slash display-1 text-muted mb-4"></i>
+    <h2 class="mb-3">Company Not Found</h2>
+    <p class="text-muted mb-4">The company you're looking for doesn't exist or has been removed.</p>
+    <a [routerLink]="['/companies']" class="btn btn-primary">
+      <i class="bi bi-arrow-left me-2"></i>Browse Companies
+    </a>
+  </div>
+</div>

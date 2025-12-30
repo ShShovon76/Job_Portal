@@ -1,0 +1,38 @@
+// In your component's SCSS
+.dropdown {
+  /* Allow the dropdown to overflow the containers */
+.card-header, 
+.card-body,
+.table-responsive {
+  overflow: visible !important;
+}
+
+/* Ensure the dropdown menu sits on top of everything */
+.dropdown-menu {
+  z-index: 1050; 
+}
+
+  
+  .dropdown-toggle::after {
+    display: inline-block;
+    margin-left: 0.255em;
+    vertical-align: 0.255em;
+    content: "";
+    border-top: 0.3em solid;
+    border-right: 0.3em solid transparent;
+    border-bottom: 0;
+    border-left: 0.3em solid transparent;
+  }
+}
+
+// Ensure table rows don't hide dropdowns
+.table-responsive {
+  overflow: visible !important; /* Allow dropdowns to be seen */
+}
+
+/* If you need scrolling on mobile but visible dropdowns on desktop */
+@media (min-width: 992px) {
+  .table-responsive {
+    overflow: visible !important;
+  }
+}

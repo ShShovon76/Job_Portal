@@ -1,0 +1,217 @@
+<!-- Loading -->
+<div *ngIf="loading" class="container py-5 text-center">
+  <div class="spinner-border text-primary" style="width:3rem;height:3rem"></div>
+  <p class="mt-3">Loading job details...</p>
+</div>
+
+<!-- CONTENT -->
+<div *ngIf="!loading && job" class="container py-5">
+
+  <!-- Breadcrumb -->
+  <nav class="mb-4">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink="/jobs">Jobs</a></li>
+      <li class="breadcrumb-item">
+        <a [routerLink]="['/companies', job.company.id]">
+          {{ job.company.name }}
+        </a>
+      </li>
+      <li class="breadcrumb-item active">{{ job.title }}</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+
+    <!-- MAIN -->
+    <div class="col-lg-8">
+
+      <!-- Header -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+
+          <div class="d-flex justify-content-between">
+            <div class="d-flex gap-3">
+              <img [src]="job.company.logoUrl || 'assets/images/default-company.png'" class="rounded"
+                style="width:60px;height:60px;object-fit:contain" />
+
+              <div>
+                <h3 class="mb-1">{{ job.title }}</h3>
+                <a [routerLink]="['/companies', job.company.id]">
+                  {{ job.company.name }}
+                </a>
+              </div>
+            </div>
+
+            <!-- In your job-details.component.html, update the save button section -->
+            <div class="d-flex gap-2">
+              <button class="btn btn-outline-primary" (click)="toggleSaveJob()" [disabled]="checkingSaved"
+                [title]="isSaved ? 'Remove from saved jobs' : 'Save job'">
+                <i class="bi" [ngClass]="isSaved ? 'bi-bookmark-fill text-primary' : 'bi-bookmark'"></i>
+                <span class="ms-1 d-none d-md-inline">
+                  {{ isSaved ? 'Saved' : 'Save' }}
+                </span>
+                <span *ngIf="checkingSaved" class="spinner-border spinner-border-sm ms-1"></span>
+              </button>
+
+              <button class="btn btn-outline-secondary" (click)="shareJob()">
+                <i class="bi bi-share"></i>
+                <span class="ms-1 d-none d-md-inline">Share</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Tags -->
+          <div class="mt-3 d-flex flex-wrap gap-2">
+            <span class="badge bg-light text-dark">
+              <i class="bi {{ getJobTypeIcon(job.jobType) }}"></i>
+              {{ job.jobType.replace('_',' ') }}
+            </span>
+
+            <span class="badge bg-primary">
+              {{ getExperienceText(job.experienceLevel) }}
+            </span>
+
+            <span class="badge bg-light text-dark">
+              <i class="bi bi-geo-alt"></i> {{ job.location }}
+            </span>
+
+            <span *ngIf="job.remoteAllowed" class="badge bg-success">
+              Remote
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5>Job Description</h5>
+          <div [innerHTML]="job.description"></div>
+        </div>
+      </div>
+
+      <!-- Skills -->
+      <div class="card shadow-sm mb-4">
+        <div class="card-body">
+          <h5>Required Skills</h5>
+          <ul class="list-unstyled">
+            <li *ngFor="let skill of job.skills">
+              <i class="bi bi-check-circle-fill text-success me-2"></i>
+              {{ skill }}
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Company -->
+      <div class="card shadow-sm mb-4" *ngIf="company">
+        <div class="card-body">
+          <h5>About {{ company.name }}</h5>
+          <p>{{ company.about || 'No description available.' }}</p>
+
+          <a [routerLink]="['/companies', company.id]" class="btn btn-outline-primary">
+            View Company Profile
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="col-lg-4">
+
+      <!-- Apply -->
+      <!-- NOT LOGGED IN -->
+      <ng-container *ngIf="!currentUser">
+        <ng-template [ngTemplateOutlet]="loginBox"></ng-template>
+      </ng-container>
+
+      <!-- LOGGED IN BUT EMPLOYER -->
+      <ng-container *ngIf="currentUser && isEmployer()">
+        <div class="text-center py-4">
+          <i class="bi bi-briefcase-fill display-5 text-warning"></i>
+          <p class="mt-3 fw-semibold">
+            You are logged in as an employer
+          </p>
+          <p class="text-muted">
+            Please log in with a <b>Job Seeker</b> account to apply for jobs.
+          </p>
+
+          <button class="btn btn-outline-primary w-100" (click)="redirectToJobSeekerLogin()">
+            Login as Job Seeker
+          </button>
+        </div>
+      </ng-container>
+
+      <!-- JOB SEEKER -->
+      <ng-container *ngIf="currentUser && isJobSeeker()">
+        <!-- your existing apply UI -->
+        <div class="mb-3">
+          <label class="form-label">Select Resume *</label>
+          <select class="form-select" [(ngModel)]="applicationData.resumeId">
+            <option [ngValue]="null">Select resume</option>
+            <option *ngFor="let resume of resumes" [ngValue]="resume.id">
+              {{ resume.title }}
+            </option>
+          </select>
+
+          <small class="text-muted" *ngIf="resumes.length === 0">
+            You have no resumes uploaded.
+          </small>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Cover Letter (optional)</label>
+          <textarea class="form-control" rows="4" [(ngModel)]="applicationData.coverLetter">
+    </textarea>
+        </div>
+
+        <button *ngIf="!hasApplied; else appliedBox" class="btn btn-primary w-100" (click)="submitApplication()">
+          Apply Now
+        </button>
+
+        <ng-template #appliedBox>
+          <button class="btn btn-success w-100" disabled>
+            ✅ Already Applied
+          </button>
+        </ng-template>
+      </ng-container>
+        <ng-template #loginBox>
+  <div class="text-center py-4">
+    <i class="bi bi-person-circle display-5 text-muted"></i>
+    <p class="mt-3">Sign in to apply for this job</p>
+
+    <a routerLink="/auth/login" class="btn btn-primary w-100 mb-2">
+      Sign In
+    </a>
+
+    <a routerLink="/auth/register" class="btn btn-outline-primary w-100">
+      Create Account
+    </a>
+  </div>
+</ng-template>
+
+
+      <!-- Similar Jobs -->
+      <div *ngIf="similarJobs.length" class="card shadow-sm mt-4">
+        <div class="card-body">
+          <h5>Similar Jobs</h5>
+
+          <a *ngFor="let j of similarJobs" [routerLink]="['/jobs', j.id]"
+            class="list-group-item list-group-item-action border-0 px-0">
+            <div class="d-flex justify-content-between">
+              <div>
+                <strong>{{ j.title }}</strong>
+                <div class="text-muted small">{{ j.company.name }}</div>
+              </div>
+              <div class="text-end small">
+                {{ j.jobType.replace('_',' ') }}
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

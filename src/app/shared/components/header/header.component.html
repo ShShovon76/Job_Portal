@@ -1,0 +1,282 @@
+<!-- Main Navigation -->
+<header class="navbar-header" [class.scrolled]="isScrolled">
+  <nav class="navbar navbar-expand-lg">
+    <div class="container">
+      <!-- Brand Logo -->
+      <a class="navbar-brand" (click)="navigateToHome(); closeAllDropdowns()">
+        <div class="brand-logo">
+          <i class="bi bi-briefcase-fill brand-icon"></i>
+          <span class="brand-text">Job<span class="text-primary">Portal</span></span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation (Always Visible) -->
+      <div class="desktop-navigation d-none d-lg-flex">
+        <!-- Public Navigation -->
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link" 
+               [class.active]="isRouteActive('/jobs')"
+               (click)="navigateToJobs(); closeAllDropdowns()">
+              <i class="bi bi-search me-1"></i>
+              Find Jobs
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link"
+               [class.active]="isRouteActive('/companies')"
+               (click)="navigateToCompanies(); closeAllDropdowns()">
+              <i class="bi bi-building me-1"></i>
+              Companies
+            </a>
+          </li>
+        </ul>
+
+        <!-- User Specific Navigation -->
+        <div *ngIf="isAuthenticated && currentUser" class="authenticated-nav">
+          <!-- Employer Specific -->
+          <div *ngIf="isEmployer()" class="d-flex align-items-center">
+            <a class="nav-link me-3" 
+               [class.active]="isRouteActive('/employer/post-job')"
+               (click)="navigateToPostJob(); closeAllDropdowns()">
+              <i class="bi bi-plus-circle me-1"></i>
+              Post a Job
+            </a>
+          </div>
+
+          <!-- Job Seeker Specific -->
+          <div *ngIf="isJobSeeker()" class="d-flex align-items-center">
+            <a class="nav-link me-3"
+               [class.active]="isRouteActive('/job-seeker/applied-jobs')" 
+               (click)="navigateToAppliedJobs(); closeAllDropdowns()">
+              <i class="bi bi-file-earmark-text me-1"></i>
+              Applied Jobs
+            </a>
+            <a class="nav-link"
+               [class.active]="isRouteActive('/job-seeker/saved-jobs')"  
+               (click)="navigateToSavedJobs(); closeAllDropdowns()">
+              <i class="bi bi-bookmark me-1"></i>
+              Saved Jobs
+            </a>
+          </div>
+        </div>
+
+        <!-- Auth Controls -->
+        <div class="auth-controls">
+          <!-- Authenticated User -->
+          <div *ngIf="isAuthenticated && currentUser" class="user-menu">
+            <!-- Notifications -->
+            <div class="notification-badge me-3">
+              <button class="btn btn-icon position-relative">
+                <i class="bi bi-bell"></i>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                  3
+                </span>
+              </button>
+            </div>
+
+            <!-- User Profile Dropdown -->
+            <div class="dropdown" #userDropdown>
+              <button class="user-dropdown-toggle" 
+                      (click)="toggleProfileDropdown()"
+                      [class.active]="isProfileDropdownOpen">
+                <div class="user-avatar" [class.has-image]="currentUser.profilePictureUrl">
+                  <span *ngIf="!currentUser.profilePictureUrl">
+                    {{ getUserInitials() }}
+                  </span>
+                  <img *ngIf="currentUser.profilePictureUrl" 
+                       [src]="'http://localhost:8080'+currentUser.profilePictureUrl" 
+                       [alt]="currentUser.fullName">
+                </div>
+                <div class="user-info d-none d-xl-block">
+                  <div class="user-name">{{ currentUser.fullName }}</div>
+                  <div class="user-role">{{ currentUser.role | titlecase }}</div>
+                </div>
+                <i class="bi bi-chevron-down dropdown-arrow"></i>
+              </button>
+
+              <!-- Dropdown Menu -->
+              <div class="dropdown-menu" [class.show]="isProfileDropdownOpen">
+                <!-- Dashboard -->
+                <a class="dropdown-item" (click)="navigateToDashboard(); closeAllDropdowns()">
+                  <i class="bi bi-speedometer2"></i>
+                  Dashboard
+                </a>
+
+                <!-- Profile -->
+                <a class="dropdown-item" (click)="navigateToProfile(); closeAllDropdowns()">
+                  <i class="bi bi-person-circle"></i>
+                  My Profile
+                </a>
+
+                <!-- Divider -->
+                <div class="dropdown-divider"></div>
+
+                <!-- Admin Access -->
+                <a *ngIf="isAdmin()" 
+                   class="dropdown-item"
+                   (click)="navigateToAdminPanel(); closeAllDropdowns()">
+                  <i class="bi bi-shield-check"></i>
+                  Admin Panel
+                </a>
+
+                <!-- Settings -->
+                <a class="dropdown-item" routerLink="/settings" (click)="closeAllDropdowns()">
+                  <i class="bi bi-gear"></i>
+                  Settings
+                </a>
+
+                <!-- Divider -->
+                <div class="dropdown-divider"></div>
+
+                <!-- Logout -->
+                <a class="dropdown-item text-danger" (click)="logout()">
+                  <i class="bi bi-box-arrow-right"></i>
+                  Logout
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Guest User -->
+          <div *ngIf="!isAuthenticated" class="guest-menu">
+            <button class="btn btn-outline-primary me-2" (click)="login()">
+              <i class="bi bi-box-arrow-in-right"></i>
+              Login
+            </button>
+            <button class="btn btn-primary" (click)="register()">
+              <i class="bi bi-person-plus"></i>
+              Sign Up
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mobile Toggle Button -->
+      <button class="navbar-toggler d-lg-none" 
+              type="button" 
+              (click)="toggleMobileMenu()"
+              [class.active]="isMobileMenuOpen">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Navigation Menu -->
+  <div class="mobile-navigation d-lg-none" [class.show]="isMobileMenuOpen" #mobileMenu>
+    <div class="mobile-menu-content">
+      <!-- User Info (If Authenticated) -->
+      <div *ngIf="isAuthenticated && currentUser" class="mobile-user-info">
+        <div class="user-avatar large">
+          <span *ngIf="!currentUser.profilePictureUrl">
+            {{ getUserInitials() }}
+          </span>
+          <img *ngIf="currentUser.profilePictureUrl" 
+               [src]="'http://localhost:8080'+currentUser.profilePictureUrl" 
+               [alt]="currentUser.fullName">
+        </div>
+        <div class="user-details">
+          <h6>{{ currentUser.fullName }}</h6>
+          <span class="badge bg-primary">{{ currentUser.role | titlecase }}</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <ul class="mobile-nav-list">
+        <!-- Public Links -->
+        <li>
+          <a (click)="navigateToJobs(); closeAllDropdowns()"
+             [class.active]="isRouteActive('/jobs')">
+            <i class="bi bi-search"></i>
+            Find Jobs
+          </a>
+        </li>
+        <li>
+          <a (click)="navigateToCompanies(); closeAllDropdowns()"
+             [class.active]="isRouteActive('/companies')">
+            <i class="bi bi-building"></i>
+            Companies
+          </a>
+        </li>
+
+        <!-- Role-Specific Links -->
+        <ng-container *ngIf="isAuthenticated">
+          <!-- Employer Links -->
+          <li *ngIf="isEmployer()">
+            <a (click)="navigateToPostJob(); closeAllDropdowns()"
+               [class.active]="isRouteActive('/employer/post-job')">
+              <i class="bi bi-plus-circle"></i>
+              Post a Job
+            </a>
+          </li>
+
+          <!-- Job Seeker Links -->
+          <li *ngIf="isJobSeeker()">
+            <a (click)="navigateToAppliedJobs(); closeAllDropdowns()"
+               [class.active]="isRouteActive('/job-seeker/applied-jobs')">  <!-- FIXED HERE -->
+              <i class="bi bi-file-earmark-text"></i>
+              Applied Jobs
+            </a>
+          </li>
+          <li *ngIf="isJobSeeker()">
+            <a (click)="navigateToSavedJobs(); closeAllDropdowns()"
+               [class.active]="isRouteActive('/job-seeker/saved-jobs')">  <!-- FIXED HERE -->
+              <i class="bi bi-bookmark"></i>
+              Saved Jobs
+            </a>
+          </li>
+
+          <!-- Common User Links -->
+          <li>
+            <a (click)="navigateToDashboard(); closeAllDropdowns()">
+              <i class="bi bi-speedometer2"></i>
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a (click)="navigateToProfile(); closeAllDropdowns()">
+              <i class="bi bi-person-circle"></i>
+              My Profile
+            </a>
+          </li>
+
+          <!-- Admin Link -->
+          <li *ngIf="isAdmin()">
+            <a (click)="navigateToAdminPanel(); closeAllDropdowns()">
+              <i class="bi bi-shield-check"></i>
+              Admin Panel
+            </a>
+          </li>
+
+          <li>
+            <a routerLink="/settings" (click)="closeAllDropdowns()">
+              <i class="bi bi-gear"></i>
+              Settings
+            </a>
+          </li>
+        </ng-container>
+      </ul>
+
+      <!-- Mobile Auth Controls -->
+      <div class="mobile-auth-controls">
+        <div *ngIf="!isAuthenticated" class="guest-buttons">
+          <button class="btn btn-outline-primary w-100 mb-2" (click)="login(); closeAllDropdowns()">
+            <i class="bi bi-box-arrow-in-right"></i>
+            Login
+          </button>
+          <button class="btn btn-primary w-100" (click)="register(); closeAllDropdowns()">
+            <i class="bi bi-person-plus"></i>
+            Sign Up
+          </button>
+        </div>
+
+        <div *ngIf="isAuthenticated" class="authenticated-actions">
+          <button class="btn btn-outline-danger w-100" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            Logout
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

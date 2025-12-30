@@ -1,0 +1,336 @@
+<!-- Main Footer -->
+<footer class="bg-dark text-white pt-5">
+  <!-- Top Section: Newsletter & Quick Stats -->
+  <div class="container">
+    <div class="row align-items-center mb-5">
+      <!-- Newsletter -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="card bg-gradient-primary border-0 shadow-lg">
+          <div class="card-body p-4">
+            <div class="row align-items-center">
+              <div class="col-md-8">
+                <h4 class="text-white mb-3">
+                  <i class="bi bi-envelope-paper me-2"></i>
+                  Get Job Alerts
+                </h4>
+                <p class="text-white-50 mb-4">
+                  Subscribe to our newsletter and get the latest job openings, career tips, and industry insights directly in your inbox.
+                </p>
+                
+                <form [formGroup]="newsletterForm" (ngSubmit)="subscribeNewsletter()" class="row g-2">
+                  <div class="col-12">
+                    <div class="input-group">
+                      <span class="input-group-text bg-white border-0">
+                        <i class="bi bi-envelope text-primary"></i>
+                      </span>
+                      <input type="email" 
+                             class="form-control border-0" 
+                             formControlName="email"
+                             placeholder="Enter your email address">
+                      <button type="submit" 
+                              class="btn btn-light" 
+                              [disabled]="newsletterForm.invalid || newsletterSubscribed">
+                        <span *ngIf="!newsletterSubscribed">Subscribe</span>
+                        <span *ngIf="newsletterSubscribed">
+                          <i class="bi bi-check-circle me-1"></i>Subscribed
+                        </span>
+                      </button>
+                    </div>
+                    <div *ngIf="submitted && newsletterForm.get('email')?.errors" class="text-warning small mt-2">
+                      Please enter a valid email address
+                    </div>
+                  </div>
+                  
+                  <div class="col-12 mt-2">
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" formControlName="jobAlerts" id="jobAlerts">
+                      <label class="form-check-label text-white small" for="jobAlerts">
+                        Job Alerts
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" formControlName="careerTips" id="careerTips">
+                      <label class="form-check-label text-white small" for="careerTips">
+                        Career Tips
+                      </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="checkbox" formControlName="promotions" id="promotions">
+                      <label class="form-check-label text-white small" for="promotions">
+                        Promotions
+                      </label>
+                    </div>
+                  </div>
+                </form>
+              </div>
+              
+              <div class="col-md-4 text-center">
+                <div class="bg-white rounded-circle p-4 d-inline-block mb-3">
+                  <i class="bi bi-bell-fill text-primary display-4"></i>
+                </div>
+                <p class="text-white small mb-0">
+                  Join <strong>50,000+</strong> professionals
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Quick Stats -->
+      <div class="col-lg-6">
+        <div class="row text-center">
+          <div class="col-4 mb-4">
+            <div class="display-6 fw-bold text-primary">{{ '50K+' }}</div>
+            <div class="small text-white-50">Jobs Posted</div>
+          </div>
+          <div class="col-4 mb-4">
+            <div class="display-6 fw-bold text-success">{{ '500K+' }}</div>
+            <div class="small text-white-50">Members</div>
+          </div>
+          <div class="col-4 mb-4">
+            <div class="display-6 fw-bold text-info">{{ '10K+' }}</div>
+            <div class="small text-white-50">Companies</div>
+          </div>
+          <div class="col-4">
+            <div class="display-6 fw-bold text-warning">{{ '95%' }}</div>
+            <div class="small text-white-50">Success Rate</div>
+          </div>
+          <div class="col-4">
+            <div class="display-6 fw-bold text-danger">{{ '24/7' }}</div>
+            <div class="small text-white-50">Support</div>
+          </div>
+          <div class="col-4">
+            <div class="display-6 fw-bold text-purple">{{ '150+' }}</div>
+            <div class="small text-white-50">Countries</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Divider -->
+    <hr class="border-secondary my-5">
+    
+    <!-- Links Section -->
+    <div class="row g-5 mb-5">
+      <!-- Quick Links -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h5 class="text-white mb-4">
+          <i class="bi bi-lightning me-2"></i>
+          Quick Links
+        </h5>
+        <ul class="list-unstyled">
+          <li *ngFor="let link of quickLinks" class="mb-2">
+            <a [href]="link.url" class="text-white-50 text-decoration-none hover-text-white">
+              <i [class]="link.icon + ' me-2 small'"></i>
+              {{link.label}}
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <!-- For Employers -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h5 class="text-white mb-4">
+          <i class="bi bi-briefcase me-2"></i>
+          For Employers
+        </h5>
+        <ul class="list-unstyled">
+          <li *ngFor="let link of employerLinks" class="mb-2">
+            <a [href]="link.url" class="text-white-50 text-decoration-none hover-text-white">
+              {{link.label}}
+            </a>
+          </li>
+        </ul>
+        
+        <!-- Popular Categories -->
+        <div class="mt-4">
+          <h6 class="text-white mb-3">
+            <i class="bi bi-tags me-2"></i>
+            Popular Categories
+          </h6>
+          <div class="d-flex flex-wrap gap-2">
+            <span *ngFor="let category of popularCategories" 
+                  class="badge bg-secondary bg-opacity-25 text-white-50">
+              {{category.name}} ({{category.count}})
+            </span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- For Job Seekers -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <h5 class="text-white mb-4">
+          <i class="bi bi-person-circle me-2"></i>
+          For Job Seekers
+        </h5>
+        <ul class="list-unstyled">
+          <li *ngFor="let link of jobSeekerLinks" class="mb-2">
+            <a [href]="link.url" class="text-white-50 text-decoration-none hover-text-white">
+              {{link.label}}
+            </a>
+          </li>
+        </ul>
+        
+        <!-- Download App -->
+        <div class="mt-4">
+          <h6 class="text-white mb-3">
+            <i class="bi bi-phone me-2"></i>
+            Mobile App
+          </h6>
+          <div class="d-flex flex-column gap-2">
+            <a *ngFor="let store of appStores" 
+               [href]="store.url" 
+               class="btn btn-outline-light btn-sm d-flex align-items-center">
+              <i [class]="store.icon + ' me-2'"></i>
+              <div class="text-start">
+                <div class="small">Download on</div>
+                <div class="fw-bold">{{store.store}}</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Company & Legal -->
+      <div class="col-lg-3 col-md-6 mb-4">
+        <!-- Company -->
+        <h5 class="text-white mb-4">
+          <i class="bi bi-building me-2"></i>
+          Company
+        </h5>
+        <ul class="list-unstyled">
+          <li *ngFor="let link of companyLinks" class="mb-2">
+            <a [href]="link.url" class="text-white-50 text-decoration-none hover-text-white">
+              {{link.label}}
+            </a>
+          </li>
+        </ul>
+        
+        <!-- Legal -->
+        <h5 class="text-white mt-4 mb-3">
+          <i class="bi bi-shield-check me-2"></i>
+          Legal
+        </h5>
+        <ul class="list-unstyled">
+          <li *ngFor="let link of legalLinks" class="mb-2">
+            <a [href]="link.url" class="text-white-50 text-decoration-none hover-text-white">
+              {{link.label}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </div>
+    
+    <!-- Divider -->
+    <hr class="border-secondary my-4">
+    
+    <!-- Bottom Section: Social, Trust, Country -->
+    <div class="row align-items-center py-4">
+      <!-- Logo & Description -->
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <div class="d-flex align-items-center mb-3">
+          <i class="bi bi-briefcase-fill text-primary display-6 me-3"></i>
+          <div>
+            <h3 class="text-white mb-0">JobPortal</h3>
+            <small class="text-white-50">Connecting Talent with Opportunity</small>
+          </div>
+        </div>
+        <p class="text-white-50 mb-0 small">
+          World's leading job portal connecting millions of job seekers with thousands of employers worldwide. Your career journey starts here.
+        </p>
+      </div>
+      
+      <!-- Social Links -->
+      <div class="col-lg-4 mb-4 mb-lg-0">
+        <div class="text-center">
+          <h6 class="text-white mb-3">Connect With Us</h6>
+          <div class="d-flex justify-content-center gap-3">
+            <a *ngFor="let social of socialLinks" 
+               [href]="social.url" 
+               target="_blank"
+               class="social-icon rounded-circle d-flex align-items-center justify-content-center"
+               [style.background]="social.color">
+              <i [class]="social.icon + ' text-white'"></i>
+            </a>
+          </div>
+        </div>
+        
+        <!-- Trust Badges -->
+        <div class="d-flex justify-content-center gap-4 mt-4">
+          <div *ngFor="let badge of getTrustBadges()" class="text-center">
+            <i [class]="badge.icon + ' text-success h4 mb-2'"></i>
+            <div class="text-white-50 small">{{badge.text}}</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Country Selector & Back to Top -->
+      <div class="col-lg-4">
+        <div class="text-lg-end">
+          <!-- Country Selector -->
+          <div class="dropdown d-inline-block mb-4">
+            <button class="btn btn-outline-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+              <i class="bi bi-globe me-2"></i>
+              Global Site
+            </button>
+            <ul class="dropdown-menu">
+              <li *ngFor="let country of countries">
+                <a class="dropdown-item" href="#">
+                  <span class="me-2">{{country.flag}}</span>
+                  {{country.name}}
+                </a>
+              </li>
+            </ul>
+          </div>
+          
+          <!-- Back to Top -->
+          <button (click)="scrollToTop()" 
+                  class="btn btn-primary rounded-circle ms-3"
+                  style="width: 50px; height: 50px;">
+            <i class="bi bi-arrow-up"></i>
+          </button>
+        </div>
+        
+        <!-- Payment Methods -->
+        <div class="text-lg-end mt-4">
+          <h6 class="text-white mb-2">Accepted Payments</h6>
+          <div class="d-flex justify-content-lg-end gap-2">
+            <i class="bi bi-credit-card text-white-50 h4"></i>
+            <i class="bi bi-paypal text-white-50 h4"></i>
+            <i class="bi bi-currency-bitcoin text-white-50 h4"></i>
+            <i class="bi bi-bank text-white-50 h4"></i>
+            <i class="bi bi-cash-coin text-white-50 h4"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Copyright -->
+    <div class="row pt-4 border-top border-secondary">
+      <div class="col-md-6">
+        <p class="text-white-50 mb-0 small">
+          &copy; {{getCurrentYear()}} JobPortal. All rights reserved. 
+          <a href="/legal/privacy" class="text-white-50 text-decoration-underline ms-2">Privacy Policy</a>
+          <a href="/legal/terms" class="text-white-50 text-decoration-underline ms-2">Terms of Service</a>
+        </p>
+      </div>
+      <div class="col-md-6 text-md-end">
+        <p class="text-white-50 mb-0 small">
+          JobPortal is a registered trademark. 
+          <span class="d-block d-md-inline">
+            Made with <i class="bi bi-heart-fill text-danger"></i> for job seekers worldwide.
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+  <div class="whatsapp-float">
+  <a href="https://wa.me/1234567890" target="_blank" class="btn btn-success rounded-circle shadow-lg">
+    <i class="bi bi-whatsapp display-6"></i>
+  </a>
+</div>
+</footer>
+
+<!-- WhatsApp Float Button -->
+

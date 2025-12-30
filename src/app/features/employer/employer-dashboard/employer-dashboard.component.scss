@@ -1,0 +1,591 @@
+/* features/employer/employer-dashboard/employer-dashboard.component.scss */
+
+.employer-dashboard-container {
+  padding: 2rem 1rem;
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Stats Cards */
+.stats-grid {
+  .stat-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+    position: relative;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 6px;
+      height: 100%;
+      background: linear-gradient(180deg, #4e54c8 0%, #8f94fb 100%);
+      border-radius: 16px 0 0 16px;
+    }
+    
+    &:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    }
+    
+    .card-body {
+      padding: 1.5rem;
+    }
+    
+    .stat-icon-wrapper {
+      width: 56px;
+      height: 56px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      
+      &.blue {
+        background: linear-gradient(135deg, #6a89cc 0%, #b8e1fc 100%);
+        color: #1a237e;
+      }
+      
+      &.green {
+        background: linear-gradient(135deg, #4CAF50 0%, #C5E1A5 100%);
+        color: #1b5e20;
+      }
+      
+      &.purple {
+        background: linear-gradient(135deg, #8e24aa 0%, #ce93d8 100%);
+        color: #4a148c;
+      }
+      
+      &.yellow {
+        background: linear-gradient(135deg, #ffb300 0%, #ffecb3 100%);
+        color: #ff6f00;
+      }
+    }
+    
+    h6 {
+      font-size: 0.875rem;
+      font-weight: 500;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    
+    h3 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #2d3748 0%, #4a5568 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+  }
+}
+
+/* Charts Section */
+.chart-container {
+  background: white;
+  border-radius: 20px;
+  padding: 1.5rem;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  
+  .chart-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #edf2f7;
+  }
+  
+  .chart-wrapper {
+    height: 280px;
+    position: relative;
+    
+    canvas {
+      max-height: 100% !important;
+    }
+  }
+}
+
+/* Recent Cards */
+.recent-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  transition: transform 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+  }
+  
+  .card-header {
+    background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.25rem 1.5rem;
+    border-bottom: none;
+    
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+    }
+  }
+  
+  .card-body {
+    max-height: 400px;
+    overflow-y: auto;
+    
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 10px;
+    }
+    
+    &::-webkit-scrollbar-thumb {
+      background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+    }
+  }
+  
+  .item-row {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #edf2f7;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    
+    &:last-child {
+      border-bottom: none;
+    }
+    
+    &:hover {
+      background: linear-gradient(90deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+      padding-left: 2rem;
+    }
+    
+    h5 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.5rem;
+    }
+    
+    p {
+      font-size: 0.875rem;
+      color: #718096;
+    }
+    
+    .badge {
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+      border-radius: 20px;
+      
+      &.badge-blue {
+        background: rgba(66, 153, 225, 0.1);
+        color: #2b6cb0;
+        border: 1px solid rgba(66, 153, 225, 0.2);
+      }
+      
+      &.badge-green {
+        background: rgba(72, 187, 120, 0.1);
+        color: #276749;
+        border: 1px solid rgba(72, 187, 120, 0.2);
+      }
+    }
+    
+    .status-badge {
+      padding: 0.375rem 0.875rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: capitalize;
+      letter-spacing: 0.3px;
+      
+      &.status-pending {
+        background: rgba(246, 173, 85, 0.1);
+        color: #c05621;
+        border: 1px solid rgba(246, 173, 85, 0.3);
+      }
+      
+      &.status-reviewed {
+        background: rgba(102, 126, 234, 0.1);
+        color: #4c51bf;
+        border: 1px solid rgba(102, 126, 234, 0.3);
+      }
+      
+      &.status-interview {
+        background: rgba(237, 137, 54, 0.1);
+        color: #c05621;
+        border: 1px solid rgba(237, 137, 54, 0.3);
+      }
+      
+      &.status-accepted {
+        background: rgba(72, 187, 120, 0.1);
+        color: #276749;
+        border: 1px solid rgba(72, 187, 120, 0.3);
+      }
+      
+      &.status-rejected {
+        background: rgba(245, 101, 101, 0.1);
+        color: #c53030;
+        border: 1px solid rgba(245, 101, 101, 0.3);
+      }
+    }
+  }
+  
+  .empty-state {
+    padding: 3rem 1.5rem;
+    text-align: center;
+    
+    .empty-icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 1.5rem;
+      background: linear-gradient(135deg, #f6f9fc 0%, #edf2f7 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      
+      i {
+        font-size: 2rem;
+        color: #a0aec0;
+      }
+    }
+    
+    .empty-text {
+      color: #718096;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+    
+    .btn {
+      padding: 0.625rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 500;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      transition: all 0.3s ease;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+      }
+    }
+  }
+}
+
+/* Companies Section */
+.companies-section {
+  .section-header {
+    margin-bottom: 1.5rem;
+    
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2d3748;
+      position: relative;
+      display: inline-block;
+      
+      &::after {
+        content: '';
+        position: absolute;
+        bottom: -8px;
+        left: 0;
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+        border-radius: 2px;
+      }
+    }
+  }
+  
+  .company-card {
+    background: white;
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    
+    &:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(102, 126, 234, 0.15);
+      border-color: rgba(102, 126, 234, 0.3);
+      
+      .company-logo {
+        transform: scale(1.05);
+      }
+    }
+    
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #f6f9fc 0%, #edf2f7 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+      overflow: hidden;
+      
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      
+      .logo-placeholder {
+        i {
+          font-size: 1.5rem;
+          color: #a0aec0;
+        }
+      }
+    }
+    
+    h6 {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 0.25rem;
+    }
+    
+    p {
+      font-size: 0.875rem;
+      color: #718096;
+    }
+    
+    .verified-badge {
+      background: linear-gradient(135deg, #4CAF50 0%, #C5E1A5 100%);
+      color: white;
+      padding: 0.125rem 0.5rem;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+  }
+}
+
+/* Quick Actions */
+.quick-actions {
+  .action-card {
+    display: block;
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 8px 32px rgba(31, 38, 135, 0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid rgba(226, 232, 240, 0.5);
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 60px rgba(102, 126, 234, 0.2);
+      
+      &::before {
+        opacity: 1;
+      }
+      
+      .action-icon {
+        transform: scale(1.1) rotate(5deg);
+      }
+    }
+    
+    .action-icon {
+      width: 70px;
+      height: 70px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      
+      &.icon-blue {
+        background: linear-gradient(135deg, #6a89cc 0%, #b8e1fc 100%);
+        color: #1a237e;
+      }
+      
+      &.icon-green {
+        background: linear-gradient(135deg, #4CAF50 0%, #C5E1A5 100%);
+        color: #1b5e20;
+      }
+      
+      &.icon-purple {
+        background: linear-gradient(135deg, #8e24aa 0%, #ce93d8 100%);
+        color: #4a148c;
+      }
+      
+      i {
+        font-size: 2rem;
+      }
+    }
+    
+    .action-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #2d3748;
+      margin-bottom: 0.75rem;
+      background: linear-gradient(90deg, #2d3748 0%, #4a5568 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .action-description {
+      font-size: 0.9375rem;
+      color: #718096;
+      line-height: 1.5;
+      margin: 0;
+    }
+  }
+}
+
+/* Loading Animation */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  
+  .placeholder {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: .5;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .employer-dashboard-container {
+    padding: 1rem;
+  }
+  
+  .stats-grid {
+    .stat-card {
+      .card-body {
+        padding: 1rem;
+      }
+      
+      h3 {
+        font-size: 2rem;
+      }
+      
+      .stat-icon-wrapper {
+        width: 48px;
+        height: 48px;
+      }
+    }
+  }
+  
+  .chart-container {
+    padding: 1rem;
+    
+    .chart-wrapper {
+      height: 240px;
+    }
+  }
+  
+  .recent-card {
+    .card-header {
+      padding: 1rem;
+    }
+    
+    .item-row {
+      padding: 1rem;
+      
+      &:hover {
+        padding-left: 1rem;
+      }
+    }
+  }
+  
+  .quick-actions {
+    .action-card {
+      padding: 1.5rem;
+      
+      .action-icon {
+        width: 60px;
+        height: 60px;
+        margin-bottom: 1rem;
+        
+        i {
+          font-size: 1.75rem;
+        }
+      }
+    }
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .employer-dashboard-container {
+    background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
+  }
+  
+  .stat-card,
+  .chart-container,
+  .recent-card,
+  .company-card,
+  .action-card {
+    background: #2d3748;
+    border-color: #4a5568;
+  }
+  
+  .stat-card h3,
+  .action-title {
+    background: linear-gradient(90deg, #e2e8f0 0%, #cbd5e0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .chart-title,
+  .recent-card .item-row h5,
+  .company-card h6,
+  .empty-text {
+    color: #e2e8f0;
+  }
+  
+  .text-muted,
+  .recent-card .item-row p,
+  .company-card p,
+  .action-description {
+    color: #a0aec0 !important;
+  }
+  
+  .empty-state .empty-icon {
+    background: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+    
+    i {
+      color: #718096;
+    }
+  }
+}

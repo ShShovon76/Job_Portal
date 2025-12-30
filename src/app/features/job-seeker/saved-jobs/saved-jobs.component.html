@@ -1,0 +1,242 @@
+<div class="saved-jobs-container">
+    <!-- Header -->
+    <div class="container py-4">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a routerLink="/job-seeker/dashboard">Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Saved Jobs</li>
+                    </ol>
+                </nav>
+                <h1 class="h2 mb-2">Saved Jobs</h1>
+                <p class="text-muted mb-0">
+                    <i class="bi bi-bookmark-fill text-primary me-1"></i>
+                    {{ totalItems }} saved jobs
+                </p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <button class="btn btn-outline-danger" (click)="unsaveAllJobs()" [disabled]="savedJobs.length === 0">
+                    <i class="bi bi-trash me-1"></i>
+                    Clear All
+                </button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div *ngIf="loading" class="text-center py-5">
+            <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Loading your saved jobs...</p>
+        </div>
+
+        <!-- Empty State -->
+        <div *ngIf="!loading && savedJobs.length === 0" class="text-center py-5">
+            <div class="empty-state-icon mb-4">
+                <i class="bi bi-bookmark text-muted" style="font-size: 4rem;"></i>
+            </div>
+            <h3 class="h4 mb-3">No saved jobs yet</h3>
+            <p class="text-muted mb-4">Save jobs that interest you to view them here later.</p>
+            <a routerLink="/jobs" class="btn btn-primary">
+                <i class="bi bi-search me-1"></i>
+                Browse Jobs
+            </a>
+        </div>
+
+        <!-- Saved Jobs List -->
+        <div *ngIf="!loading && savedJobs.length > 0" class="row">
+            <div class="col-lg-8">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <div *ngFor="let savedJob of savedJobs"
+                                class="list-group-item list-group-item-action p-4 border-bottom"
+                                (click)="viewJobDetails(savedJob.job?.id)">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div class="flex-grow-1 me-3">
+                                        <!-- Job Title and Company -->
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="me-3">
+                                                <img [src]="savedJob.job?.company?.logoUrl || 'assets/images/default-company.png'"
+                                                    class="rounded"
+                                                    style="width: 50px; height: 50px; object-fit: contain;"
+                                                    alt="Company logo">
+                                            </div>
+                                            <div>
+                                                <h5 class="mb-1 fw-bold">{{ savedJob.job?.title }}</h5>
+                                                <div class="d-flex align-items-center text-muted small mb-2">
+                                                    <span class="me-3" *ngIf="savedJob.job?.company?.name">
+                                                        <i class="bi bi-building me-1"></i>
+                                                        {{ savedJob.job?.company?.name }}
+                                                    </span>
+                                                    <span *ngIf="savedJob.job?.location">
+                                                        <i class="bi bi-geo-alt me-1"></i>
+                                                        {{ savedJob.job?.location }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Job Tags -->
+                                        <div class="mb-3">
+                                            <span class="badge bg-light text-dark me-2" *ngIf="savedJob.job?.jobType">
+                                                <i [class]="getJobTypeIcon(savedJob.job?.jobType)"></i>
+                                                {{ savedJob.job?.jobType?.replace('_', ' ') }}
+                                            </span>
+                                            <span class="badge bg-primary me-2" *ngIf="savedJob.job?.experienceLevel">
+                                                {{ savedJob.job?.experienceLevel }}
+                                            </span>
+                                            <span class="badge bg-success me-2" *ngIf="savedJob.job?.remoteAllowed">
+                                                <i class="bi bi-house-door me-1"></i>Remote
+                                            </span>
+                                            <span class="badge bg-info text-dark me-2" *ngIf="savedJob.job">
+                                                {{ getSalaryRange(savedJob.job) }}
+                                            </span>
+                                        </div>
+
+                                        <!-- Skills -->
+                                        <div class="mb-3" *ngIf="getSkillsArray(savedJob.job?.skills).length > 0">
+                                            <div class="d-flex flex-wrap gap-1">
+                                                <span
+                                                    *ngFor="let skill of getSkillsArray(savedJob.job?.skills).slice(0, 5)"
+                                                    class="badge bg-light text-dark border">
+                                                    {{ skill }}
+                                                </span>
+                                                <span *ngIf="getSkillsArray(savedJob.job?.skills).length > 5"
+                                                    class="badge bg-light text-dark border">
+                                                    +{{ getSkillsArray(savedJob.job?.skills).length - 5 }} more
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Posted and Saved Info -->
+                                        <div class="d-flex justify-content-between text-muted small">
+                                            <div>
+                                                <span class="me-3" *ngIf="savedJob.job?.postedAt">
+                                                    <i class="bi bi-clock me-1"></i>
+                                                    Posted {{ getTimeAgo(savedJob.job?.postedAt) }}
+                                                </span>
+                                                <span>
+                                                    <i class="bi bi-bookmark me-1"></i>
+                                                    Saved {{ getTimeAgo(savedJob.savedAt) }}
+                                                </span>
+                                            </div>
+                                            <div class="text-danger" *ngIf="savedJob.job?.deadline">
+                                                <i class="bi bi-clock me-1"></i>
+                                                Deadline: {{ savedJob.job?.deadline | date }}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex flex-column align-items-end">
+                                        <button class="btn btn-outline-danger btn-sm mb-2"
+                                            (click)="unsaveJob(savedJob.id, $event)" title="Remove from saved jobs">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        <button class="btn btn-primary btn-sm"
+                                            (click)="applyForJob(savedJob.job?.id, $event)" title="Apply for this job">
+                                            Apply Now
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav *ngIf="totalPages > 1" aria-label="Saved jobs pagination">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" [class.disabled]="currentPage === 0">
+                            <a class="page-link" (click)="onPageChange(currentPage - 1)" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+
+                        <li *ngFor="let page of getPageNumbers()" class="page-item"
+                            [class.active]="page === currentPage">
+                            <a class="page-link" (click)="onPageChange(page)">{{ page + 1 }}</a>
+                        </li>
+
+                        <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                            <a class="page-link" (click)="onPageChange(currentPage + 1)" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+
+            <!-- Sidebar Stats -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Saved Jobs Stats
+                        </h5>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                Total Saved Jobs
+                                <span class="badge bg-primary rounded-pill">{{ totalItems }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                Active Jobs
+                                <span class="badge bg-success rounded-pill">
+                                    {{ activeJobsCount }}
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                Remote Jobs
+                                <span class="badge bg-info rounded-pill">
+                                    {{ remoteJobsCount }}
+                                </span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center px-0">
+                                Expiring Soon
+                                <span class="badge bg-warning rounded-pill">
+                                    {{ expiringSoonCount }}
+                                </span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title mb-3">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            Tips
+                        </h5>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Apply to saved jobs before they expire
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Keep your resume updated for quick applications
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Set up job alerts for similar positions
+                            </li>
+                            <li>
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Remove jobs you've already applied to
+                            </li>
+                        </ul>
+                        <div class="mt-3">
+                            <a routerLink="/job-seeker/job-alerts" class="btn btn-outline-primary btn-sm w-100">
+                                <i class="bi bi-bell me-1"></i>
+                                Set Up Job Alerts
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

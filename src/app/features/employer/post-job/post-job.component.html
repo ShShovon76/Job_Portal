@@ -1,0 +1,540 @@
+<div class="container-fluid py-4 bg-light min-vh-100">
+  <div class="container">
+    <!-- Header -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div class="d-flex align-items-center mb-4">
+          <div class="flex-grow-1">
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a routerLink="/employer/dashboard" class="text-decoration-none">Dashboard</a></li>
+                <li class="breadcrumb-item"><a routerLink="/employer/manage-jobs" class="text-decoration-none">Jobs</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Post New Job</li>
+              </ol>
+            </nav>
+            <div class="d-flex align-items-center justify-content-between">
+              <div>
+                <h1 class="h2 mb-2 fw-bold text-dark">Post a New Job</h1>
+                <p class="text-muted mb-0">Fill in the details below to create your job posting. All fields marked with * are required.</p>
+              </div>
+              <div class="d-flex align-items-center">
+                <div class="me-3">
+                  <span class="badge bg-light text-dark border">
+                    <i class="fas fa-clock me-1"></i>
+                    <span *ngIf="loading">Processing...</span>
+                    <span *ngIf="!loading">Ready</span>
+                  </span>
+                </div>
+                <button class="btn btn-outline-primary" (click)="saveAsDraft()" [disabled]="loading">
+                  <i class="fas fa-save me-2"></i>Save Draft
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Success Alert -->
+    <div *ngIf="success" class="row mb-4">
+      <div class="col-12">
+        <div class="alert alert-success alert-dismissible fade show d-flex align-items-center shadow-sm" role="alert">
+          <i class="fas fa-check-circle fa-2x me-3"></i>
+          <div class="flex-grow-1">
+            <h5 class="alert-heading mb-1">Job Posted Successfully!</h5>
+            <p class="mb-0">Your job has been published. Redirecting to manage jobs...</p>
+          </div>
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Main Form Column -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white border-0 py-3">
+            <h3 class="h5 mb-0 fw-bold">
+              <i class="fas fa-edit text-primary me-2"></i>
+              Job Details
+            </h3>
+          </div>
+          <div class="card-body p-4 p-md-5">
+            <form [formGroup]="jobForm" (ngSubmit)="onSubmit()" novalidate>
+              
+              <!-- Company Selection -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold d-flex align-items-center">
+                  <span>Company *</span>
+                  <span class="ms-2 badge bg-info bg-opacity-10 text-info border border-info border-opacity-25">
+                    <i class="fas fa-building me-1"></i>Select
+                  </span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="fas fa-building text-muted"></i>
+                  </span>
+                  <select formControlName="companyId" class="form-select" 
+                          [class.is-invalid]="jobForm.get('companyId')?.invalid && (jobForm.get('companyId')?.touched || submitted)">
+                    <option value="" disabled selected>Select a company to post job under...</option>
+                    <option *ngFor="let company of companies" [value]="company.id">
+                      {{ company.name }} 
+                      <span *ngIf="company.verified" class="text-success">
+                        <i class="fas fa-check-circle ms-1"></i> Verified
+                      </span>
+                    </option>
+                  </select>
+                </div>
+                <div *ngIf="jobForm.get('companyId')?.invalid && (jobForm.get('companyId')?.touched || submitted)" class="invalid-feedback d-block mt-2">
+                  <i class="fas fa-exclamation-circle me-1"></i> Please select a company
+                </div>
+                <div *ngIf="companies.length === 0" class="mt-3">
+                  <div class="alert alert-warning border-0 bg-warning bg-opacity-10 py-3">
+                    <div class="d-flex align-items-start">
+                      <i class="fas fa-exclamation-triangle text-warning mt-1 me-3"></i>
+                      <div>
+                        <h6 class="alert-heading mb-1">No Companies Found</h6>
+                        <p class="mb-2">You need to create or verify a company before posting jobs.</p>
+                        <a [routerLink]="['/employer/company/create']" class="btn btn-sm btn-warning">
+                          <i class="fas fa-plus me-1"></i> Create Company
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Category Selection -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold d-flex align-items-center">
+                  <span>Job Category *</span>
+                  <span class="ms-2 badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">
+                    <i class="fas fa-tag me-1"></i>Required
+                  </span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="fas fa-folder text-muted"></i>
+                  </span>
+                  <select formControlName="categoryId" class="form-select" 
+                          [class.is-invalid]="jobForm.get('categoryId')?.invalid && (jobForm.get('categoryId')?.touched || submitted)">
+                    <option value="" disabled selected>Select job category...</option>
+                    <option *ngFor="let category of categories" [value]="category.id">
+                      {{ category.name }}
+                    </option>
+                  </select>
+                </div>
+                <div *ngIf="jobForm.get('categoryId')?.invalid && (jobForm.get('categoryId')?.touched || submitted)" class="invalid-feedback d-block mt-2">
+                  <i class="fas fa-exclamation-circle me-1"></i> Please select a job category
+                </div>
+              </div>
+
+              <!-- Job Title -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Job Title *</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="fas fa-briefcase text-muted"></i>
+                  </span>
+                  <input type="text" formControlName="title" class="form-control" 
+                         placeholder="e.g., Senior Frontend Developer (React/Angular)"
+                         [class.is-invalid]="jobForm.get('title')?.invalid && (jobForm.get('title')?.touched || submitted)">
+                </div>
+                <div *ngIf="jobForm.get('title')?.invalid && (jobForm.get('title')?.touched || submitted)" class="invalid-feedback d-block mt-2">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  <span *ngIf="jobForm.get('title')?.errors?.['required']">Job title is required</span>
+                  <span *ngIf="jobForm.get('title')?.errors?.['minlength']">Title must be at least 5 characters</span>
+                  <span *ngIf="jobForm.get('title')?.errors?.['maxlength']">Title cannot exceed 200 characters</span>
+                </div>
+                <small class="text-muted mt-2 d-block">
+                  <i class="fas fa-lightbulb me-1 text-warning"></i>
+                  Be specific about role, technology, and experience level
+                </small>
+              </div>
+
+              <!-- Description -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold d-flex justify-content-between">
+                  <span>Job Description *</span>
+                  <span class="text-muted fw-normal">
+                    {{ (jobForm.get('description')?.value?.length || 0) }} / 100 characters
+                  </span>
+                </label>
+                <div class="position-relative">
+                  <textarea formControlName="description" class="form-control" rows="8"
+                            placeholder="Describe the role, responsibilities, requirements, and benefits...
+                            
+• Key responsibilities
+• Required skills and qualifications
+• Company culture and benefits
+• Career growth opportunities"
+                            [class.is-invalid]="jobForm.get('description')?.invalid && (jobForm.get('description')?.touched || submitted)"></textarea>
+                  <div class="position-absolute bottom-0 end-0 p-3">
+                    <span *ngIf="(jobForm.get('description')?.value?.length || 0) >= 100" class="badge bg-success">
+                      <i class="fas fa-check me-1"></i> Good length
+                    </span>
+                  </div>
+                </div>
+                <div *ngIf="jobForm.get('description')?.invalid && (jobForm.get('description')?.touched || submitted)" class="invalid-feedback d-block mt-2">
+                  <i class="fas fa-exclamation-circle me-1"></i>
+                  <span *ngIf="jobForm.get('description')?.errors?.['required']">Description is required</span>
+                  <span *ngIf="jobForm.get('description')?.errors?.['minlength']">Description must be at least 100 characters</span>
+                </div>
+              </div>
+
+              <!-- Job Type & Experience -->
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Job Type *</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="fas fa-calendar-alt text-muted"></i>
+                    </span>
+                    <select formControlName="jobType" class="form-select"
+                            [class.is-invalid]="jobForm.get('jobType')?.invalid && (jobForm.get('jobType')?.touched || submitted)">
+                      <option *ngFor="let type of jobTypes" [value]="type">
+                        {{ type | titlecase }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label fw-semibold">Experience Level *</label>
+                  <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0">
+                      <i class="fas fa-chart-line text-muted"></i>
+                    </span>
+                    <select formControlName="experienceLevel" class="form-select"
+                            [class.is-invalid]="jobForm.get('experienceLevel')?.invalid && (jobForm.get('experienceLevel')?.touched || submitted)">
+                      <option *ngFor="let level of experienceLevels" [value]="level">
+                        {{ level | titlecase }}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Salary Section -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold d-flex align-items-center">
+                  <span>Salary Information</span>
+                  <span class="ms-2 badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">
+                    <i class="fas fa-dollar-sign me-1"></i>Recommended
+                  </span>
+                </label>
+                <div class="card border-0 bg-light bg-opacity-50">
+                  <div class="card-body p-4">
+                    <div class="row g-3">
+                      <div class="col-md-5">
+                        <label class="form-label fw-medium">Minimum Salary</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-white">$</span>
+                          <input type="number" formControlName="minSalary" class="form-control" placeholder="0"
+                                 [class.is-invalid]="!validateSalary()">
+                        </div>
+                      </div>
+                      <div class="col-md-5">
+                        <label class="form-label fw-medium">Maximum Salary</label>
+                        <div class="input-group">
+                          <span class="input-group-text bg-white">$</span>
+                          <input type="number" formControlName="maxSalary" class="form-control" placeholder="0"
+                                 [class.is-invalid]="!validateSalary()">
+                        </div>
+                      </div>
+                      <div class="col-md-2">
+                        <label class="form-label fw-medium">Period</label>
+                        <select formControlName="salaryType" class="form-select">
+                          <option *ngFor="let type of salaryTypes" [value]="type">
+                            {{ type | titlecase }}
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                    <div *ngIf="salaryError" class="alert alert-danger border-0 bg-danger bg-opacity-10 mt-3 py-2">
+                      <i class="fas fa-exclamation-circle me-2"></i>{{ salaryError }}
+                    </div>
+                    <div *ngIf="!salaryError && (jobForm.get('minSalary')?.value || jobForm.get('maxSalary')?.value)" 
+                         class="alert alert-success border-0 bg-success bg-opacity-10 mt-3 py-2">
+                      <i class="fas fa-check-circle me-2"></i>
+                      Salary range set: 
+                      {{ jobForm.get('minSalary')?.value ? '$' + jobForm.get('minSalary')?.value : 'Not specified' }} 
+                      to 
+                      {{ jobForm.get('maxSalary')?.value ? '$' + jobForm.get('maxSalary')?.value : 'Not specified' }} 
+                      per {{ jobForm.get('salaryType')?.value?.toLowerCase() }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Location & Remote -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold">Location Details</label>
+                <div class="row g-3">
+                  <div class="col-md-8">
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-map-marker-alt text-muted"></i>
+                      </span>
+                      <input type="text" formControlName="location" class="form-control" 
+                             placeholder="e.g., New York, NY or 'Remote'"
+                             [class.is-invalid]="jobForm.get('location')?.invalid && (jobForm.get('location')?.touched || submitted)">
+                    </div>
+                    <div *ngIf="jobForm.get('location')?.invalid && (jobForm.get('location')?.touched || submitted)" class="invalid-feedback d-block mt-2">
+                      <i class="fas fa-exclamation-circle me-1"></i>
+                      <span *ngIf="jobForm.get('location')?.errors?.['required']">Location is required</span>
+                      <span *ngIf="jobForm.get('location')?.errors?.['maxlength']">Location cannot exceed 100 characters</span>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="form-check form-switch bg-light rounded p-3 h-100">
+                      <input class="form-check-input" type="checkbox" formControlName="remoteAllowed" 
+                             id="remoteAllowed" role="switch">
+                      <label class="form-check-label fw-medium ms-2" for="remoteAllowed">
+                        <i class="fas fa-laptop-house me-2"></i>
+                        Remote Work Allowed
+                      </label>
+                      <div class="form-text mt-1">
+                        <small class="text-muted">Check if this is a remote position</small>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Skills Section -->
+              <div class="mb-4">
+                <label class="form-label fw-semibold d-flex align-items-center justify-content-between">
+                  <span>Required Skills *</span>
+                  <span class="badge bg-primary rounded-pill">{{ skills.length }} skills</span>
+                </label>
+                
+                <!-- Skill Input -->
+                <div class="input-group mb-3">
+                  <span class="input-group-text bg-light border-end-0">
+                    <i class="fas fa-code text-muted"></i>
+                  </span>
+                  <input type="text" [(ngModel)]="newSkill" [ngModelOptions]="{standalone: true}" 
+                         class="form-control" placeholder="Type a skill and press Enter or click Add"
+                         (keypress)="onSkillKeyPress($event)">
+                  <button class="btn btn-primary" type="button" (click)="addSkill()" [disabled]="!newSkill.trim()">
+                    <i class="fas fa-plus me-1"></i> Add
+                  </button>
+                </div>
+                
+                <!-- Quick Suggestions -->
+                <div class="mb-4">
+                  <p class="text-muted mb-2">
+                    <i class="fas fa-bolt text-warning me-1"></i>
+                    Quick add popular skills:
+                  </p>
+                  <div class="d-flex flex-wrap gap-2">
+                    <button *ngFor="let skill of skillSuggestions" type="button" 
+                            class="btn btn-sm btn-outline-secondary d-flex align-items-center"
+                            (click)="addSkill(skill)">
+                      <span>{{ skill }}</span>
+                      <i class="fas fa-plus ms-2 small"></i>
+                    </button>
+                  </div>
+                </div>
+                
+                <!-- Added Skills -->
+                <div *ngIf="skills.length > 0" class="mb-3">
+                  <p class="text-muted mb-2">Added skills (click × to remove):</p>
+                  <div class="d-flex flex-wrap gap-2">
+                    <span *ngFor="let skill of skills.controls; let i = index" 
+                          class="badge bg-primary bg-gradient d-flex align-items-center px-3 py-2 rounded-pill">
+                      <i class="fas fa-check-circle me-2"></i>
+                      {{ skill.value }}
+                      <button type="button" class="btn-close btn-close-white ms-2" 
+                              (click)="removeSkill(i)" aria-label="Remove"></button>
+                    </span>
+                  </div>
+                </div>
+                
+                <!-- Skills Error -->
+                <div *ngIf="skillsError" class="alert alert-danger border-0 bg-danger bg-opacity-10 py-2 mt-2">
+                  <i class="fas fa-exclamation-circle me-2"></i>{{ skillsError }}
+                </div>
+              </div>
+
+              <!-- Deadline -->
+              <div class="mb-5">
+                <label class="form-label fw-semibold">Application Deadline *</label>
+                <div class="row">
+                  <div class="col-md-6">
+                    <div class="input-group">
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-calendar-day text-muted"></i>
+                      </span>
+                      <input type="date" formControlName="deadline" class="form-control"
+                             [min]="today | date:'yyyy-MM-dd'"
+                             [class.is-invalid]="(!validateDeadline() && jobForm.get('deadline')?.touched) || (jobForm.get('deadline')?.invalid && (jobForm.get('deadline')?.touched || submitted))">
+                    </div>
+                    <div *ngIf="!validateDeadline() && jobForm.get('deadline')?.touched" class="invalid-feedback d-block mt-2">
+                      <i class="fas fa-exclamation-circle me-1"></i>{{ deadlineError }}
+                    </div>
+                    <div *ngIf="jobForm.get('deadline')?.invalid && (jobForm.get('deadline')?.touched || submitted) && validateDeadline()" 
+                         class="invalid-feedback d-block mt-2">
+                      <i class="fas fa-exclamation-circle me-1"></i>Deadline is required
+                    </div>
+                  </div>
+                  <div class="col-md-6">
+                    <div class="alert alert-info border-0 bg-info bg-opacity-10 h-100 d-flex align-items-center p-3">
+                      <div>
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>Tip:</strong> Set deadline at least 2 weeks from today for better response
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Form Actions -->
+              <div class="border-top pt-4 mt-4">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <button type="button" class="btn btn-outline-secondary" (click)="loadDraft()" [disabled]="loading">
+                      <i class="fas fa-file-import me-2"></i>Load Draft
+                    </button>
+                  </div>
+                  <div class="d-flex gap-3">
+                    <a [routerLink]="['/employer/manage-jobs']" class="btn btn-outline-dark px-4">
+                      <i class="fas fa-times me-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary px-5" [disabled]="loading || jobForm.invalid">
+                      <span *ngIf="!loading">
+                        <i class="fas fa-paper-plane me-2"></i>Publish Job
+                      </span>
+                      <span *ngIf="loading">
+                        <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                        Publishing...
+                      </span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar Tips -->
+      <div class="col-lg-4">
+        <!-- Tips Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white border-0 py-3">
+            <h3 class="h5 mb-0 fw-bold">
+              <i class="fas fa-lightbulb text-warning me-2"></i>
+              Tips for Success
+            </h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-grid gap-3">
+              <div *ngFor="let tip of tips; let i = index" 
+                   class="d-flex align-items-start p-3 border-start border-3" 
+                   [ngClass]="{
+                     'border-info': i === 0,
+                     'border-success': i === 1,
+                     'border-primary': i === 2,
+                     'border-warning': i === 3
+                   }">
+                <div class="flex-shrink-0 me-3">
+                  <div class="rounded-circle p-2 d-flex align-items-center justify-content-center"
+                       [ngClass]="tip.iconColor + ' bg-opacity-10'"
+                       style="width: 40px; height: 40px;">
+                    <i class="{{tip.icon}}"></i>
+                  </div>
+                </div>
+                <div class="flex-grow-1">
+                  <h6 class="fw-bold mb-1">{{tip.title}}</h6>
+                  <p class="text-muted small mb-0">{{tip.description}}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white border-0 py-3">
+            <h3 class="h5 mb-0 fw-bold">
+              <i class="fas fa-eye text-purple me-2"></i>
+              Job Preview
+            </h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="d-grid gap-3">
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Title:</span>
+                <span class="fw-medium">{{ jobForm.get('title')?.value || 'Not set' }}</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Type:</span>
+                <span class="badge bg-info bg-opacity-10 text-info">{{ jobForm.get('jobType')?.value || 'Not set' }}</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Experience:</span>
+                <span class="badge bg-primary bg-opacity-10 text-primary">{{ jobForm.get('experienceLevel')?.value || 'Not set' }}</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Location:</span>
+                <span class="fw-medium">{{ jobForm.get('location')?.value || 'Not set' }}</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Remote:</span>
+                <span class="badge" [ngClass]="jobForm.get('remoteAllowed')?.value ? 'bg-success' : 'bg-secondary'">
+                  {{ jobForm.get('remoteAllowed')?.value ? 'Yes' : 'No' }}
+                </span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Skills:</span>
+                <span class="badge bg-dark">{{ skills.length }}</span>
+              </div>
+              <div class="d-flex align-items-center justify-content-between">
+                <span class="text-muted">Deadline:</span>
+                <span class="fw-medium">{{ jobForm.get('deadline')?.value || 'Not set' }}</span>
+              </div>
+              <hr class="my-2">
+              <div class="alert alert-light border text-center p-3">
+                <i class="fas fa-chart-line text-primary fa-2x mb-2"></i>
+                <p class="mb-0 fw-medium">Jobs with complete details get <strong>3x more applications</strong></p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress Card -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white border-0 py-3">
+            <h3 class="h5 mb-0 fw-bold">
+              <i class="fas fa-tasks text-success me-2"></i>
+              Completion Status
+            </h3>
+          </div>
+          <div class="card-body p-4">
+            <div class="progress mb-3" style="height: 10px;">
+              <div class="progress-bar bg-success progress-bar-striped" 
+                   role="progressbar" 
+                   [style.width]="getCompletionPercentage() + '%'"
+                   [attr.aria-valuenow]="getCompletionPercentage()"
+                   aria-valuemin="0" 
+                   aria-valuemax="100">
+              </div>
+            </div>
+            <div class="text-center mb-4">
+              <h2 class="fw-bold display-6 text-success">{{ getCompletionPercentage() }}%</h2>
+              <p class="text-muted small">Complete</p>
+            </div>
+            <div class="d-grid gap-2">
+              <div class="d-flex align-items-center" *ngFor="let check of getCompletionChecks()">
+                <i class="fas fa-check-circle me-2" [ngClass]="check.completed ? 'text-success' : 'text-muted'"></i>
+                <span [ngClass]="check.completed ? 'fw-medium' : 'text-muted'">{{ check.label }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

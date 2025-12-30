@@ -1,0 +1,39 @@
+/* You can add global styles to this file, and also import other style files */
+// Home Component Styles
+:root {
+   --gradient-primary: linear-gradient(135deg, #3d86f5 0%, #753fbb 100%);
+  --gradient-success: linear-gradient(135deg, #198754 0%, #20c997 100%);
+  --gradient-warning: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+  --gradient-danger: linear-gradient(135deg, #dc3545 0%, #e83e8c 100%);
+  --gradient-info: linear-gradient(135deg, #0dcaf0 0%, #17a2b8 100%);
+}
+/* Smooth scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Better focus styles */
+*:focus {
+    outline: 2px solid #4299e1;
+    outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #cbd5e0;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a0aec0;
+}

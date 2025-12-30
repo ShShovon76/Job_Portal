@@ -1,0 +1,288 @@
+
+  .hero-section {
+    background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+    position: relative;
+    overflow: hidden;
+    
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320"><path fill="%23ffffff" fill-opacity="0.1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path></svg>');
+      background-size: cover;
+      background-position: bottom;
+      opacity: 0.1;
+    }
+    
+    .search-box {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      
+      .form-control {
+        &:focus {
+          box-shadow: none;
+          border-color: #0d6efd;
+        }
+      }
+    }
+  }
+  
+  .company-card {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 1px solid #e9ecef;
+    border-radius: 12px;
+    overflow: hidden;
+    
+    &:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12) !important;
+      border-color: #0d6efd;
+      
+      .company-logo img {
+        transform: scale(1.1);
+      }
+    }
+    
+    .company-logo {
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #f8f9fa;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #dee2e6;
+      
+      img {
+        transition: transform 0.3s ease;
+        max-width: 80%;
+        max-height: 80%;
+        object-fit: contain;
+      }
+    }
+    
+    .star-rating {
+      display: inline-flex;
+      align-items: center;
+      
+      i {
+        font-size: 0.875rem;
+      }
+    }
+    
+    .verified-badge {
+      .badge {
+        font-size: 0.7rem;
+        padding: 0.25rem 0.5rem;
+        border-radius: 4px;
+        
+        i {
+          font-size: 0.75rem;
+        }
+      }
+    }
+    
+    .company-details {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 0.75rem;
+      margin: 1rem -0.75rem;
+      
+      i {
+        font-size: 0.875rem;
+      }
+    }
+    
+    .card-footer {
+      background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+      border-top: 1px solid #dee2e6;
+      padding: 0.75rem 1rem;
+      
+      .badge {
+        font-size: 0.75rem;
+        padding: 0.35rem 0.65rem;
+      }
+    }
+  }
+  
+  .sidebar-sticky {
+  position: sticky;
+  top: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; // spacing between filters and stats
+  z-index: 1020;
+
+  .card {
+    border-radius: 12px;
+    border: 1px solid #dee2e6;
+    overflow: hidden;
+  }
+
+  .filter-list {
+    max-height: 300px;
+    overflow-y: auto;
+
+    &::-webkit-scrollbar {
+      width: 6px;
+    }
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1;
+      border-radius: 3px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: #c1c1c1;
+      border-radius: 3px;
+      &:hover {
+        background: #a1a1a1;
+      }
+    }
+
+    .list-group-item {
+      border: none;
+      border-radius: 6px;
+      margin-bottom: 2px;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background-color: rgba(13, 110, 253, 0.08);
+      }
+
+      &.active {
+        background-color: #0d6efd;
+        color: #fff;
+        i {
+          color: white !important;
+        }
+        .badge {
+          background-color: rgba(255, 255, 255, 0.2);
+          color: white;
+        }
+      }
+    }
+  }
+
+  .stats-card {
+    text-align: center;
+    z-index: 1021;
+    background: #f8f9fa;
+  }
+
+  // Mobile adjustments
+  @media (max-width: 768px) {
+    position: static;
+  }
+}
+
+  .stats-card {
+    background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    
+    i {
+      opacity: 0.9;
+    }
+    
+    h4 {
+      font-size: 2rem;
+      font-weight: bold;
+    }
+    
+    .text-success {
+      color: #20c997 !important;
+    }
+  }
+  
+  .pagination {
+    .page-item {
+      margin: 0 2px;
+      
+      .page-link {
+        border: none;
+        border-radius: 8px;
+        color: #495057;
+        padding: 0.5rem 0.75rem;
+        min-width: 40px;
+        text-align: center;
+        transition: all 0.2s ease;
+        
+        &:hover {
+          background-color: rgba(13, 110, 253, 0.1);
+          color: #0d6efd;
+          transform: translateY(-1px);
+        }
+      }
+      
+      &.active .page-link {
+        background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+        color: white;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.3);
+      }
+      
+      &.disabled .page-link {
+        color: #adb5bd;
+        background-color: #f8f9fa;
+      }
+    }
+  }
+  
+  // Responsive adjustments
+  @media (max-width: 768px) {
+    .hero-section {
+      .display-4 {
+        font-size: 2rem;
+      }
+      
+      .lead {
+        font-size: 1rem;
+      }
+      
+      .search-box {
+        padding: 1.5rem !important;
+      }
+    }
+    
+    .company-card {
+      margin-bottom: 1rem;
+      
+      .company-logo {
+        width: 50px;
+        height: 50px;
+      }
+    }
+    
+    .sticky-top {
+      position: static !important;
+      margin-bottom: 1.5rem;
+    }
+  }
+  
+  // Loading animation
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .company-card {
+    animation: fadeInUp 0.6s ease-out;
+    animation-fill-mode: both;
+    
+    @for $i from 1 through 12 {
+      &:nth-child(#{$i}) {
+        animation-delay: #{$i * 0.1}s;
+      }
+    }
+  }

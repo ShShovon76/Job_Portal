@@ -1,0 +1,353 @@
+<div class="company-list-page">
+<!-- Hero Section -->
+<section class="hero-section bg-gradient-primary text-white py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-4 fw-bold mb-3">Browse Top Companies</h1>
+                <p class="lead mb-4">Discover thousands of verified companies actively hiring on our platform. Find your
+                    next workplace.</p>
+
+                <!-- Search Bar -->
+                <div class="search-box p-4 rounded bg-white shadow-lg">
+                    <form [formGroup]="searchForm">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-0">
+                                        <i class="bi bi-search text-primary"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-0" formControlName="keyword"
+                                        placeholder="Search companies by name, industry, or keyword">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-0">
+                                        <i class="bi bi-filter text-primary"></i>
+                                    </span>
+                                    <select class="form-control border-0" formControlName="industry">
+                                        <option value="">All Industries</option>
+                                        <option *ngFor="let industry of industries" [value]="industry">
+                                            {{industry}}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <button type="button" class="btn btn-primary w-100" (click)="loadCompanies()">
+                                    <i class="bi bi-search me-2"></i>Search
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="col-lg-4 text-center">
+                <img src="assets/images/company-search.png" alt="Company Search" class="img-fluid">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Content -->
+<div class="container my-5">
+    <div class="row">
+        <!-- Filters Sidebar -->
+        <!-- Filters & Stats Sidebar -->
+<div class="col-lg-3 mb-4">
+  <div class="sidebar-sticky">
+    <!-- Filters Card -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-white border-0 py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">
+          <i class="bi bi-funnel me-2"></i>Filters
+        </h5>
+        <button class="btn btn-sm btn-outline-secondary" (click)="clearFilters()">
+          Clear All
+        </button>
+      </div>
+      <div class="card-body">
+        <!-- Industry Filter -->
+        <div class="mb-4">
+          <h6 class="mb-3"><i class="bi bi-building me-2"></i>Industry</h6>
+          <div class="list-group list-group-flush filter-list">
+            <button type="button" 
+                    class="list-group-item list-group-item-action"
+                    [class.active]="selectedIndustry === ''"
+                    (click)="selectedIndustry=''; loadCompanies()">
+              All Industries
+              <span class="badge bg-primary rounded-pill">{{companies.length}}</span>
+            </button>
+            <button type="button"
+                    *ngFor="let industry of (showAllCategories ? industries : industries.slice(0, 10))"
+                    class="list-group-item list-group-item-action"
+                    [class.active]="selectedIndustry === industry"
+                    (click)="selectedIndustry = industry; loadCompanies()">
+              <i class="bi {{getIndustryIcon(industry)}} me-2"></i>{{industry}}
+            </button>
+
+            <button *ngIf="!showAllCategories && industries.length > 10" type="button"
+                    class="list-group-item list-group-item-action text-primary"
+                    (click)="toggleShowAllCategories()">
+              <i class="bi bi-chevron-down me-2"></i>Show More
+            </button>
+            <button *ngIf="showAllCategories" type="button"
+                    class="list-group-item list-group-item-action text-primary"
+                    (click)="toggleShowAllCategories()">
+              <i class="bi bi-chevron-up me-2"></i>Show Less
+            </button>
+          </div>
+        </div>
+
+        <!-- Verification Filter -->
+        <div class="mb-4">
+          <h6 class="mb-3"><i class="bi bi-shield-check me-2"></i>Verification</h6>
+          <div class="btn-group w-100" role="group">
+            <button type="button" class="btn btn-outline-primary" 
+                    [class.active]="selectedVerified === null"
+                    (click)="selectedVerified = null; loadCompanies()">
+              All Companies
+            </button>
+            <button type="button" class="btn btn-outline-primary"
+                    [class.active]="selectedVerified === true"
+                    (click)="selectedVerified = true; loadCompanies()">
+              Verified Only
+            </button>
+          </div>
+        </div>
+
+        <!-- Sort Options -->
+        <div class="mb-4">
+          <h6 class="mb-3"><i class="bi bi-sort-down me-2"></i>Sort By</h6>
+          <select class="form-select" [(ngModel)]="sortBy" (change)="sortCompanies()">
+            <option value="name">Name (A-Z)</option>
+            <option value="rating">Highest Rated</option>
+            <option value="reviews">Most Reviews</option>
+            <option value="newest">Newest First</option>
+          </select>
+        </div>
+
+        <!-- Apply Filters Button -->
+        <button class="btn btn-primary w-100" (click)="loadCompanies()">
+          <i class="bi bi-check-circle me-2"></i>Apply Filters
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Card -->
+    <div class="card stats-card shadow-sm border-0">
+      <div class="card-body text-center">
+        <i class="bi bi-building display-4 text-primary mb-3"></i>
+        <h4 class="mb-2">{{totalCompanies.toLocaleString()}}</h4>
+        <p class="text-muted mb-0">Companies Listed</p>
+        <small class="text-success">
+          <i class="bi bi-arrow-up me-1"></i>+125 this month
+        </small>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+        <!-- Companies List -->
+        <div class="col-lg-9">
+            <!-- Results Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h4 class="mb-0">Featured Companies</h4>
+                    <p class="text-muted mb-0">{{totalCompanies}} companies found</p>
+                </div>
+                <div>
+                    <span class="me-3">View:</span>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-primary active">
+                            <i class="bi bi-grid"></i>
+                        </button>
+                        <button type="button" class="btn btn-outline-primary">
+                            <i class="bi bi-list"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div *ngIf="loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3">Loading companies...</p>
+            </div>
+
+            <!-- No Results -->
+            <div *ngIf="!loading && companies.length === 0" class="text-center py-5">
+                <img src="assets/images/no-companies.svg" alt="No companies" class="img-fluid mb-4"
+                    style="max-height: 200px;">
+                <h4 class="mb-3">No companies found</h4>
+                <p class="text-muted mb-4">Try adjusting your search filters to find more companies.</p>
+                <button class="btn btn-primary" (click)="clearFilters()">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Clear All Filters
+                </button>
+            </div>
+
+            <!-- Companies Grid -->
+            <div *ngIf="!loading && companies.length > 0">
+                <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                    <div class="col" *ngFor="let company of filteredCompanies">
+                        <div class="card company-card border-0 shadow-sm h-100 hover-shadow">
+                            <div class="card-body">
+                                <!-- Company Header -->
+                                <div class="d-flex align-items-start mb-3">
+                                    <!-- Company Logo -->
+                                    <div class="company-logo me-3">
+                                        <img [src]="company.logoUrl || 'assets/images/default-company.png'"
+                                            [alt]="company.name" class="rounded"
+                                            style="width: 60px; height: 60px; object-fit: contain;">
+                                    </div>
+
+                                    <!-- Company Info -->
+                                    <div class="flex-grow-1">
+                                        <h5 class="card-title mb-1">
+                                            <a [routerLink]="['/companies', company.id]"
+                                                class="text-decoration-none text-dark">
+                                                {{company.name}}
+                                            </a>
+                                        </h5>
+                                        <p class="card-text text-muted small mb-2">
+                                            <i class="bi {{getIndustryIcon(company.industry)}} me-1"></i>
+                                            {{company.industry || 'Various Industry'}}
+                                        </p>
+
+                                        <!-- Rating -->
+                                        <div class="d-flex align-items-center mb-2">
+                                            <div class="star-rating me-2">
+                                                <i *ngFor="let star of getRatingStars(company.rating).full"
+                                                    class="bi bi-star-fill text-warning"></i>
+
+                                                <i *ngIf="getRatingStars(company.rating).half"
+                                                    class="bi bi-star-half text-warning"></i>
+
+                                                <i *ngFor="let star of getRatingStars(company.rating).empty"
+                                                    class="bi bi-star text-warning"></i>
+
+                                            </div>
+                                            <span class="text-muted small">
+                                                {{company.rating?.toFixed(1) || 'N/A'}}
+                                                <span *ngIf="company.reviewCount">({{company.reviewCount}})</span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Verified Badge -->
+                                    <div *ngIf="company.verified" class="verified-badge">
+                                        <span class="badge bg-success">
+                                            <i class="bi bi-check-circle me-1"></i>Verified
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <!-- Company Details -->
+                                <div class="company-details mb-3">
+                                    <div class="row g-2">
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-people text-muted me-2"></i>
+                                                <small
+                                                    class="text-muted">{{getCompanySizeLabel(company.companySize)}}</small>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="d-flex align-items-center">
+                                                <i class="bi bi-calendar text-muted me-2"></i>
+                                                <small class="text-muted">{{company.foundedYear || 'N/A'}}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <i class="bi bi-geo-alt me-1"></i>{{company.address || 'Location not
+                                            specified'}}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <!-- Company Description -->
+                                <p class="card-text text-muted small mb-4">
+                                    {{(company.about || 'No description available.').slice(0, 120)}}
+                                    {{(company.about || '').length > 120 ? '...' : ''}}
+                                </p>
+
+                                <!-- Action Buttons -->
+                                <div class="d-flex gap-2">
+                                    <a [routerLink]="['/companies', company.id]"
+                                        class="btn btn-primary btn-sm flex-grow-1">
+                                        View Profile
+                                    </a>
+                                    <button class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-bookmark"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Job Count Footer -->
+                            <div
+                                class="card-footer bg-transparent border-top d-flex justify-content-between align-items-center">
+                                <small class="text-muted">
+                                    <i class="bi bi-briefcase me-1"></i>Active Jobs
+                                </small>
+                                <span class="badge bg-primary">12+</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pagination -->
+                <nav *ngIf="totalCompanies > itemsPerPage" class="mt-5">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" [class.disabled]="currentPage === 1">
+                            <a class="page-link" (click)="onPageChange(currentPage - 1)">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+
+                        <li class="page-item" *ngFor="let page of getPaginationArray()"
+                            [class.active]="page === currentPage">
+                            <a class="page-link" (click)="onPageChange(page)">{{page}}</a>
+                        </li>
+
+                        <li class="page-item" [class.disabled]="currentPage === getTotalPages()">
+                            <a class="page-link" (click)="onPageChange(currentPage + 1)">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Call to Action -->
+<section class="bg-light py-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h3 class="mb-3">Want your company featured here?</h3>
+                <p class="text-muted mb-4">Join thousands of companies hiring talent through our platform.</p>
+                <a [routerLink]="['/employer/post-job']" class="btn btn-primary btn-lg">
+                    <i class="bi bi-plus-circle me-2"></i>List Your Company
+                </a>
+            </div>
+            <div class="col-lg-4 text-center">
+                <img src="assets/images/company-featured.png" alt="Company Featured" class="img-fluid"
+                    style="max-height: 200px;">
+            </div>
+        </div>
+    </div>
+</section>
+
+</div>
+<app-footer></app-footer>

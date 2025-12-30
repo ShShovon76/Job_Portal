@@ -1,0 +1,186 @@
+<!-- Hero Section -->
+<section class="hero-section" @fadeIn>
+  <div class="hero-overlay"></div>
+  <div class="container">
+    <div class="row align-items-center min-vh-90">
+      <div class="col-lg-6" @slideInLeft>
+        <div class="hero-content">
+          <h1 class="display-3 fw-bold mb-4">
+            Find Your <span class="text-gradient">Dream Job</span> or 
+            <span class="text-gradient">Perfect Candidate</span>
+          </h1>
+          <p class="lead mb-5">
+            Join thousands of professionals and companies who found success through our platform. 
+            Advanced matching, seamless application process, and career growth tools.
+          </p>
+          <div class="hero-buttons d-flex flex-wrap gap-3">
+            <button class="btn btn-primary btn-lg px-5 py-3" 
+                    (click)="navigateToRegister()"
+                    @pulse>
+              <i class="bi bi-person-plus me-2"></i>
+              Find Jobs
+            </button>
+            <button class="btn btn-outline-light btn-lg px-5 py-3"
+                    (click)="navigateToRegister()">
+              <i class="bi bi-building me-2"></i>
+              Hire Talent
+            </button>
+            <button class="btn btn-link text-white"
+                    (click)="scrollToSection('features')">
+              <i class="bi bi-chevron-down me-1"></i>
+              Learn More
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6" @slideInRight>
+        <div class="hero-visual">
+          <div class="floating-card card1">
+            <i class="bi bi-briefcase"></i>
+            <span>Job Alert</span>
+          </div>
+          <div class="floating-card card2">
+            <i class="bi bi-graph-up"></i>
+            <span>Career Growth</span>
+          </div>
+          <div class="floating-card card3">
+            <i class="bi bi-people"></i>
+            <span>Team Hiring</span>
+          </div>
+          <div class="main-illustration">
+            <img src="assets/hero-illustration.svg" alt="Career Growth" class="img-fluid">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scroll Indicator -->
+  <div class="scroll-indicator" (click)="scrollToSection('stats')">
+    <div class="mouse">
+      <div class="wheel"></div>
+    </div>
+    <span class="scroll-text">Scroll to explore</span>
+  </div>
+</section>
+
+<!-- Stats Section -->
+<section id="stats" class="stats-section py-5" @fadeIn>
+  <div class="container">
+    <div class="row g-4" @stagger>
+      <div class="col-md-3 col-6" *ngFor="let stat of stats">
+        <div class="stat-card text-center stagger-item">
+          <div class="stat-icon mb-3">
+            <i class="bi {{stat.icon}}"></i>
+          </div>
+          <h3 class="stat-number mb-2">{{stat.number}}</h3>
+          <p class="stat-label text-muted">{{stat.label}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Section -->
+<section id="features" class="features-section py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5" @fadeIn>
+      <h2 class="display-5 fw-bold mb-3">Why Choose JobPortal?</h2>
+      <p class="lead text-muted">Powerful features designed to transform your career or hiring process</p>
+    </div>
+    
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3" *ngFor="let feature of features; let i = index">
+        <div class="feature-card" [@fadeIn]="{value: '', params: {delay: i * 0.1 + 's'}}">
+          <div class="feature-icon mb-4" [ngClass]="'bg-' + feature.color + '-subtle'">
+            <i class="bi {{feature.icon}} text-{{feature.color}}"></i>
+          </div>
+          <h4 class="feature-title mb-3">{{feature.title}}</h4>
+          <p class="feature-description text-muted">{{feature.description}}</p>
+          <a href="#" class="feature-link">
+            Learn more <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section -->
+<section class="cta-section py-5" @fadeIn>
+  <div class="container">
+    <div class="cta-card rounded-4 p-5 text-center">
+      <h2 class="display-6 fw-bold mb-4">Ready to Transform Your Career?</h2>
+      <p class="lead mb-5">Join our community of successful professionals and companies</p>
+      <div class="d-flex flex-wrap justify-content-center gap-3">
+        <!-- Remove role parameter -->
+        <button class="btn btn-primary btn-lg px-5 py-3"
+                (click)="navigateToRegister()">
+          <i class="bi bi-person-plus me-2"></i>
+          Start Your Journey
+        </button>
+        <button class="btn btn-outline-dark btn-lg px-5 py-3"
+                (click)="navigateToLogin()">
+          <i class="bi bi-box-arrow-in-right me-2"></i>
+          Sign In
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials -->
+<section class="testimonials-section py-5">
+  <div class="container">
+    <div class="section-header text-center mb-5" @fadeIn>
+      <h2 class="display-5 fw-bold mb-3">Success Stories</h2>
+      <p class="lead text-muted">What our users say about their experience</p>
+    </div>
+    
+    <div class="testimonial-wrapper">
+      <div class="testimonial-card" @fadeIn>
+        <div class="testimonial-content">
+          <i class="bi bi-quote display-1 text-primary opacity-25"></i>
+          <p class="testimonial-quote fs-4">
+            "{{testimonials[currentTestimonial].quote}}"
+          </p>
+          <div class="testimonial-author">
+            <div class="author-avatar">
+              {{testimonials[currentTestimonial].avatar}}
+            </div>
+            <div class="author-info">
+              <h5 class="mb-1">{{testimonials[currentTestimonial].author}}</h5>
+              <p class="text-muted mb-0">{{testimonials[currentTestimonial].role}}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="testimonial-dots mt-4">
+        <span *ngFor="let testimonial of testimonials; let i = index"
+              class="dot" 
+              [class.active]="i === currentTestimonial"
+              (click)="currentTestimonial = i"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Footer CTA -->
+<footer class="home-footer py-5" @fadeIn>
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8">
+        <h3 class="mb-3">Still Have Questions?</h3>
+        <p class="text-muted mb-0">Contact our support team or check our FAQ section</p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <button class="btn btn-outline-primary px-4"
+                routerLink="/contact">
+          <i class="bi bi-chat-left-text me-2"></i>
+          Contact Support
+        </button>
+      </div>
+    </div>
+  </div>
+</footer>

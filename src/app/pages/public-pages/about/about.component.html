@@ -1,0 +1,286 @@
+<!-- about.component.html -->
+<div class="about-page">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center min-vh-70">
+                <div class="col-lg-6">
+                    <div class="hero-content">
+                        <h1 class="hero-title">
+                            Connecting Talent with <span class="text-gradient">Opportunity</span>
+                        </h1>
+                        <p class="hero-subtitle">
+                            We're revolutionizing the way job seekers find their dream careers and employers discover
+                            exceptional talent.
+                        </p>
+                        <div class="hero-actions">
+                            <a [routerLink]="['/auth/register/job-seeker']" class="btn btn-primary btn-lg">
+                                <i class="bi bi-person-plus"></i> Find Jobs
+                            </a>
+                            <a [routerLink]="['/auth/register/employer']" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-building"></i> Hire Talent
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="hero-image">
+                        <div class="floating-element">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <div class="floating-element">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <div class="floating-element">
+                            <i class="bi bi-graph-up"></i>
+                        </div>
+                        <img src="assets/images/about-us.png" alt="Team collaboration"
+                            class="img-fluid rounded-3 shadow-lg">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision -->
+    <section class="mission-section">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-6">
+                    <div class="mission-card">
+                        <div class="icon-wrapper bg-primary">
+                            <i class="bi bi-compass"></i>
+                        </div>
+                        <h3>Our Mission</h3>
+                        <p>
+                            To create a seamless and efficient platform that bridges the gap between talented
+                            professionals
+                            and forward-thinking companies, empowering both to achieve their full potential.
+                        </p>
+                        <ul class="mission-list">
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Simplify the job search process
+                            </li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Provide data-driven hiring insights
+                            </li>
+                            <li><i class="bi bi-check-circle-fill text-success"></i> Foster meaningful connections</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="vision-card">
+                        <div class="icon-wrapper bg-gradient-icons">
+                            <i class="bi bi-compass"></i>
+                        </div>
+                        <h3>Our Vision</h3>
+                        <p>
+                            To become the world's most trusted career ecosystem where every professional finds their
+                            perfect
+                            role and every company builds their dream team.
+                        </p>
+                        <div class="vision-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">{{formatNumber(liveStats.totalJobs)}}</div>
+                                <div class="stat-label">Jobs Posted</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">{{formatNumber(liveStats.totalCompanies)}}</div>
+                                <div class="stat-label">Companies</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">{{formatNumber(liveStats.totalUsers)}}</div>
+                                <div class="stat-label">Users</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Values -->
+    <section class="values-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Our Core Values</h2>
+                <p class="section-subtitle">The principles that guide everything we do</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-4" *ngFor="let value of coreValues">
+                    <div class="value-card">
+                        <div class="value-icon" [ngClass]="value.color">
+                            <i [class]="value.icon"></i>
+                        </div>
+                        <h4>{{value.title}}</h4>
+                        <p>{{value.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="timeline-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Our Journey</h2>
+                <p class="section-subtitle">Milestones in our growth story</p>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-item" *ngFor="let milestone of milestones">
+                    <div class="timeline-marker">
+                        <i [class]="milestone.icon"></i>
+                    </div>
+                    <div class="timeline-content">
+                        <div class="timeline-date">{{milestone.year}}</div>
+                        <h4>{{milestone.title}}</h4>
+                        <p>{{milestone.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team -->
+    <section class="team-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Leadership Team</h2>
+                <p class="section-subtitle">Meet the visionaries behind our success</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-3" *ngFor="let member of leadershipTeam">
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img [src]="member.image" [alt]="member.name" class="img-fluid">
+                            <div class="team-social">
+                                <a [href]="member.linkedin" target="_blank" class="social-link">
+                                    <i class="bi bi-linkedin"></i>
+                                </a>
+                                <a [href]="member.twitter" target="_blank" class="social-link">
+                                    <i class="bi bi-twitter"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="team-info">
+                            <h5 class="team-name">{{member.name}}</h5>
+                            <p class="team-role">{{member.position}}</p>
+                            <p class="team-bio">{{member.bio}}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <!-- Stats Section -->
+    <!-- Live Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="section-header text-center mb-5">
+                <h2>Real-Time Platform Statistics</h2>
+                <p class="section-subtitle">Live data from our growing community</p>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card" *ngFor="let stat of platformStats">
+                    <div class="stat-icon" [ngClass]="stat.color">
+                        <i [class]="stat.icon"></i>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-number">{{formatNumber(stat.displayedValue)}}</div>
+                        <div class="stat-label">{{stat.label}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Popular Skills Section -->
+            <div class="row mt-5 pt-5">
+                <div class="col-md-6">
+                    <div class="skills-card">
+                        <h4 class="mb-3">
+                            <i class="bi bi-star-fill text-warning me-2"></i>
+                            Popular Skills in Demand
+                        </h4>
+                        <div class="skills-tags">
+                            <span class="skill-tag" *ngFor="let skill of popularSkills.slice(0, 8)">
+                                {{skill}}
+                            </span>
+                        </div>
+                        <p class="mt-3 text-muted">
+                            Based on trending skills from job postings and profiles
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="year-card">
+                        <h4 class="mb-3">
+                            <i class="bi bi-calendar-check text-primary me-2"></i>
+                            Serving Since {{getCurrentYear() - 5}}
+                        </h4>
+                        <p>Over {{getCurrentYear() - 2018}} years of connecting talent with opportunities</p>
+                        <div class="year-badge">
+                            {{getCurrentYear()}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Success Stories</h2>
+                <p class="section-subtitle">What our community says about us</p>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-4" *ngFor="let testimonial of testimonials">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <i class="bi bi-quote testimonial-quote"></i>
+                            <p>"{{testimonial.content}}"</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <img [src]="testimonial.avatar" [alt]="testimonial.name" class="author-avatar">
+                            <div class="author-info">
+                                <h5>{{testimonial.name}}</h5>
+                                <p class="author-role">{{testimonial.role}} at {{testimonial.company}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-card">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h2 class="cta-title">Ready to Transform Your Career or Hiring?</h2>
+                        <p class="cta-subtitle">Join thousands of successful professionals and companies</p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <div class="cta-actions">
+                            <a [routerLink]="['/auth/register/job-seeker']" class="btn btn-light btn-lg me-2">
+                                <i class="bi bi-person-plus "></i> Sign Up Free
+                            </a>
+                            <a [routerLink]="['/contact']" class="btn btn-outline-light btn-lg">
+                                <i class="bi bi-chat-left-text"></i> Contact Sales
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<app-footer></app-footer>

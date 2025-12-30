@@ -1,0 +1,158 @@
+<footer class="auth-footer">
+  <div class="container">
+    <!-- Main Footer Content -->
+    <div class="footer-content">
+      <!-- Company Info -->
+      <div class="footer-section company-info">
+        <div class="footer-logo mb-3">
+          <i class="bi bi-briefcase-fill text-primary fs-3"></i>
+          <span class="fw-bold ms-2">JobPortal</span>
+        </div>
+        <p class="company-description mb-3">
+          Connecting talented professionals with great companies worldwide. 
+          Find your dream job or hire the perfect candidate.
+        </p>
+        <div class="social-links">
+          <a href="#" class="social-link" (click)="openFacebook(); $event.preventDefault()">
+            <i class="bi bi-facebook"></i>
+          </a>
+          <a href="#" class="social-link" (click)="openTwitter(); $event.preventDefault()">
+            <i class="bi bi-twitter"></i>
+          </a>
+          <a href="#" class="social-link" (click)="openLinkedIn(); $event.preventDefault()">
+            <i class="bi bi-linkedin"></i>
+          </a>
+          <a href="#" class="social-link" (click)="openInstagram(); $event.preventDefault()">
+            <i class="bi bi-instagram"></i>
+          </a>
+        </div>
+      </div>
+
+
+      <!-- Resources -->
+      <div class="footer-section resources">
+        <h5 class="footer-title">Resources</h5>
+        <ul class="footer-links">
+          <li>
+            <a (click)="navigateToHelp()" class="footer-link">
+              <i class="bi bi-question-circle me-2"></i>Help Center
+            </a>
+          </li>
+          <li>
+            <a (click)="navigateToAbout()" class="footer-link">
+              <i class="bi bi-info-circle me-2"></i>About Us
+            </a>
+          </li>
+          <li>
+            <a (click)="navigateToContact()" class="footer-link">
+              <i class="bi bi-envelope me-2"></i>Contact Us
+            </a>
+          </li>
+          <li>
+            <a href="#" (click)="sendEmail(); $event.preventDefault()" class="footer-link">
+              <i class="bi bi-headset me-2"></i>Support
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div class="footer-section legal">
+        <h5 class="footer-title">Legal</h5>
+        <ul class="footer-links">
+          <li>
+            <a (click)="navigateToPrivacyPolicy()" class="footer-link">
+              <i class="bi bi-shield-check me-2"></i>Privacy Policy
+            </a>
+          </li>
+          <li>
+            <a (click)="navigateToTerms()" class="footer-link">
+              <i class="bi bi-file-text me-2"></i>Terms of Service
+            </a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">
+              <i class="bi bi-cookie me-2"></i>Cookie Policy
+            </a>
+          </li>
+          <li>
+            <a href="#" class="footer-link">
+              <i class="bi bi-exclamation-triangle me-2"></i>Disclaimer
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="footer-section contact-info">
+        <h5 class="footer-title">Contact Info</h5>
+        <ul class="footer-contact">
+          <li>
+            <i class="bi bi-geo-alt me-2"></i>
+            123 Business Street, Suite 100<br>
+            City, State 12345
+          </li>
+          <li>
+            <i class="bi bi-telephone me-2"></i>
+            <a href="tel:+11234567890">+1 (123) 456-7890</a>
+          </li>
+          <li>
+            <i class="bi bi-envelope me-2"></i>
+            <a href="mailto:info@jobportal.com">info@jobportal.com</a>
+          </li>
+          <li>
+            <i class="bi bi-clock me-2"></i>
+            Mon - Fri: 9:00 AM - 6:00 PM
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <div class="footer-divider"></div>
+
+    <!-- Bottom Footer -->
+    <div class="footer-bottom">
+      <!-- Copyright -->
+      <div class="copyright">
+        <p class="mb-0">
+          &copy; {{ currentYear }} JobPortal. All rights reserved.
+          <span class="separator mx-2">•</span>
+          <a (click)="navigateToPrivacyPolicy()" class="text-muted">Privacy</a>
+          <span class="separator mx-2">•</span>
+          <a (click)="navigateToTerms()" class="text-muted">Terms</a>
+        </p>
+      </div>
+
+      <!-- Language & Currency -->
+      <div class="footer-utils">
+        <div class="language-selector">
+          <i class="bi bi-globe me-2"></i>
+          <select class="form-select form-select-sm">
+            <option selected>English</option>
+            <option>Spanish</option>
+            <option>French</option>
+            <option>German</option>
+          </select>
+        </div>
+        <div class="back-to-top" (click)="scrollToTop()">
+          <i class="bi bi-arrow-up-circle"></i>
+          <span class="d-none d-md-inline ms-1">Back to top</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Trust Badges (Optional) -->
+    <div class="trust-badges mt-4 text-center">
+      <span class="badge bg-light text-dark me-2">
+        <i class="bi bi-shield-check text-success me-1"></i>SSL Secure
+      </span>
+      <span class="badge bg-light text-dark me-2">
+        <i class="bi bi-credit-card text-primary me-1"></i>PCI Compliant
+      </span>
+      <span class="badge bg-light text-dark">
+        <i class="bi bi-check-circle text-info me-1"></i>Verified
+      </span>
+    </div>
+  </div>
+</footer>
